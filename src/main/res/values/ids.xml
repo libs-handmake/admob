@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="native_ad_view" type="id"/>
+    <item name="head_line_view" type="id"/>
+    <item name="tv_ad_label" type="id"/>
+    <item name="content_view" type="id"/>
+    <item name="icon_view" type="id"/>
+    <item name="call_to_action_view" type="id"/>
+    <item name="media_view" type="id"/>
+</resources>
