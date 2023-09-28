@@ -24,17 +24,17 @@ class NativeAdAndroidView : FrameLayout {
 
     private var nativeAd: NativeAd? = null
 
-    private var nativeAdView: NativeAdView? = null
+    private var nativeAdBindingView: NativeAdView? = null
 
-    private var headLineView: TextView? = null
+    private var headLineBindingView: TextView? = null
 
-    private var contentView: TextView? = null
+    private var contentBindingView: TextView? = null
 
-    private var mediaView: MediaView? = null
+    private var mediaBindingView: MediaView? = null
 
-    private var iconView: ImageView? = null
+    private var iconBindingView: ImageView? = null
 
-    private var callToActionBtnView: Button? = null
+    private var callToActionBindingView: Button? = null
 
     private var adLabelView: TextView? = null
 
@@ -50,12 +50,12 @@ class NativeAdAndroidView : FrameLayout {
 
     private fun bindView() {
         adLabelView = findViewById(R.id.tv_ad_label)
-        nativeAdView = findViewById(R.id.native_ad_view)
-        headLineView = findViewById(R.id.head_line_view)
-        contentView = findViewById(R.id.content_view)
-        iconView = findViewById(R.id.icon_view)
-        mediaView = findViewById(R.id.media_view)
-        callToActionBtnView = findViewById(R.id.call_to_action_view)
+        nativeAdBindingView = findViewById(R.id.native_ad_view)
+        headLineBindingView = findViewById(R.id.head_line_view)
+        contentBindingView = findViewById(R.id.content_view)
+        iconBindingView = findViewById(R.id.icon_view)
+        mediaBindingView = findViewById(R.id.media_view)
+        callToActionBindingView = findViewById(R.id.call_to_action_view)
     }
 
     fun bindAds(nativeAd: NativeAd?) {
@@ -75,31 +75,31 @@ class NativeAdAndroidView : FrameLayout {
             return
         }
         visible()
-        contentView?.text = nativeAd.body
-        headLineView?.text = nativeAd.headline
+        contentBindingView?.text = nativeAd.body
+        headLineBindingView?.text = nativeAd.headline
 //        nativeAd.advertiser?.let {
 //            adLabelView?.visible()
 //            adLabelView?.text = it
 //        } ?: adLabelView?.gone()
         nativeAd.icon?.let {
-            iconView?.visible()
-            iconView?.setImageDrawable(it.drawable)
-        } ?: iconView?.gone()
+            iconBindingView?.visible()
+            iconBindingView?.setImageDrawable(it.drawable)
+        } ?: iconBindingView?.gone()
         nativeAd.mediaContent?.let {
-            mediaView?.visible()
-            mediaView?.mediaContent = it
-        } ?: mediaView?.gone()
+            mediaBindingView?.visible()
+            mediaBindingView?.mediaContent = it
+        } ?: mediaBindingView?.gone()
         nativeAd.callToAction?.let {
-            callToActionBtnView?.visible()
-            callToActionBtnView?.text = it
-        } ?: callToActionBtnView?.gone()
-        nativeAdView?.apply {
+            callToActionBindingView?.visible()
+            callToActionBindingView?.text = it
+        } ?: callToActionBindingView?.gone()
+        nativeAdBindingView?.apply {
 //            advertiserView = this@NativeAdAndroidView.adLabelView
-            bodyView = contentView
-            headlineView = this@NativeAdAndroidView.headLineView
-            iconView = this@NativeAdAndroidView.iconView
-            mediaView = this@NativeAdAndroidView.mediaView
-            callToActionView = this@NativeAdAndroidView.callToActionBtnView
+            bodyView = contentBindingView
+            headlineView = this@NativeAdAndroidView.headLineBindingView
+            iconView = this@NativeAdAndroidView.iconBindingView
+            mediaView = this@NativeAdAndroidView.mediaBindingView
+            callToActionView = this@NativeAdAndroidView.callToActionBindingView
             setNativeAd(nativeAd)
         }
     }

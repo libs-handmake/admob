@@ -6,7 +6,13 @@ open class ADIdsDebug : AdIds {
     override val nativeID: String
         get() = "ca-app-pub-3940256099942544/2247696110"
     override val interstitialID: String
-        get() = ""
+        get() = "ca-app-pub-3940256099942544/1033173712"
+    override val interHighFloorID: String
+        get() = "ca-app-pub-3940256099942544/1033173712"
+    override val interMediumFloorId: String
+        get() = "ca-app-pub-3940256099942544/1033173712"
+    override val interAllPriceFloorId: String
+        get() = "ca-app-pub-3940256099942544/1033173712"
     override val interRewardID: String
         get() = ""
     override val rewardID: String

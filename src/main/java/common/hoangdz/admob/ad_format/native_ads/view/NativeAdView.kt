@@ -25,6 +25,7 @@ fun NativeAdView(
     val adState = adViewModel.loadNativeAds(requestID)
     val adStateCollector by adState.collectWhenResume()
     val owner = LocalLifecycleOwner.current
+    if (adStateCollector.state == DataResult.DataState.ERROR) return
     Box {
         AndroidView(modifier = Modifier.fillMaxWidth(), factory = {
             androidView(it, adState, owner)

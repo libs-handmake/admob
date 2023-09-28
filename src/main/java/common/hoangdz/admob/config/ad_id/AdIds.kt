@@ -7,6 +7,12 @@ interface AdIds {
 
     val interstitialID: String
 
+    val interHighFloorID: String
+
+    val interMediumFloorId: String
+
+    val interAllPriceFloorId: String
+
     val interRewardID: String
 
     val rewardID: String

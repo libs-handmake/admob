@@ -1,6 +1,7 @@
 import compose_config.composeImplementations
 import core_configs.coreAppImplementations
 import core_configs.jetpackComponentImplementation
+import firebase_configs.firebaseCoreImplementation
 
 plugins {
     id(Plugins.ANDROID_LIBS)
@@ -50,6 +51,7 @@ dependencies {
     coreAppImplementations()
     jetpackComponentImplementation()
     composeImplementations()
+    firebaseCoreImplementation()
     implementation(project(":base:android-common"))
     implementation(Deps.ADMOB)
     implementation(Deps.SHIMMER_COMPOSE)
