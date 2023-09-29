@@ -11,12 +11,14 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.gms.ads.nativead.NativeAd
 import common.hoangdz.admob.ad_format.AdFormatViewModel
+import common.hoangdz.lib.extensions.logError
 import common.hoangdz.lib.jetpack_compose.exts.collectWhenResume
 import common.hoangdz.lib.viewmodels.DataResult
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun NativeAdView(
+    modifier: Modifier = Modifier,
     adViewModel: AdFormatViewModel,
     requestID: String,
     loading: (@Composable () -> Unit)? = null,
@@ -24,14 +26,21 @@ fun NativeAdView(
 ) {
     val adState = adViewModel.loadNativeAds(requestID)
     val adStateCollector by adState.collectWhenResume()
+    logError(adState)
+    logError(adStateCollector.state)
     val owner = LocalLifecycleOwner.current
     if (adStateCollector.state == DataResult.DataState.ERROR) return
-    Box {
-        AndroidView(modifier = Modifier.fillMaxWidth(), factory = {
-            androidView(it, adState, owner)
-        }, update = {
-            it.bindAds(adStateCollector.value)
-        })
-        loading?.invoke()
+    Box(Modifier.fillMaxWidth()) {
+        Box(modifier = modifier) {
+            if (adStateCollector.state == DataResult.DataState.LOADED) AndroidView(
+                modifier = Modifier.fillMaxWidth(),
+                factory = {
+                    androidView(it, adState, owner)
+                },
+                update = {
+                    it.bindAds(adStateCollector.value)
+                })
+            if (adStateCollector.state == DataResult.DataState.LOADING) loading?.invoke()
+        }
     }
 }

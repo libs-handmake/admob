@@ -9,6 +9,7 @@ import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import common.hoangdz.admob.config.ad_id.AdIds
 import common.hoangdz.admob.config.shared.AdShared
+import common.hoangdz.lib.extensions.availableToLoad
 import common.hoangdz.lib.viewmodels.DataResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,12 +63,9 @@ class NativeAdsLoader @Inject constructor(
     }
 
     fun enqueueNativeAds(queue: MutableStateFlow<DataResult<NativeAd>>) {
-        if (queue.value.state in arrayOf(
-                DataResult.DataState.LOADED, DataResult.DataState.LOADING
-            )
-        ) return
-        queue.value = DataResult(DataResult.DataState.LOADING)
         synchronized(nativeAdQueue) {
+            if (!queue.value.state.availableToLoad(false)) return
+            queue.value = DataResult(DataResult.DataState.LOADING)
             nativeAdQueue.add(queue)
         }
         distributeAds(false)
