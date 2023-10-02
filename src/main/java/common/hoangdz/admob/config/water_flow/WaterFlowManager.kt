@@ -3,6 +3,7 @@ package common.hoangdz.admob.config.water_flow
 import android.content.Context
 import common.hoangdz.admob.di.entry_point.AdmobEntryPoint
 import common.hoangdz.lib.extensions.appInject
+import kotlin.math.max
 import kotlin.math.min
 
 class WaterFlowManager(
@@ -29,18 +30,21 @@ class WaterFlowManager(
             return adIds[currentIndex]
         }
 
-    val canNext get() = currentIndex < adIds.lastIndex
+    val canNext get() = currentIndex < adIds.lastIndex && adsShared.useWaterFlow && !forceTurnOffWaterFlow
 
     fun failed() {
         requestFailedTimes++
         currentIndex = 0
         timeRequestFailed = System.currentTimeMillis()
         if (requestFailedTimes > 1) adBlockLoaderTime =
-            min(adBlockLoaderTime * 2, adsShared.maxGapWaterFloor)
+            min(max(adBlockLoaderTime, adsShared.minGapWaterFloor) * 2, adsShared.maxGapWaterFloor)
     }
 
     fun next() {
-        if (!adsShared.useWaterFlow) currentIndex = 0
+        if (!adsShared.useWaterFlow) {
+            currentIndex = 0
+            return
+        }
         if (currentIndex !in adIds.indices) return
         currentIndex++
     }
@@ -48,7 +52,7 @@ class WaterFlowManager(
     val validToRequestAds: Boolean
         get() {
             if (requestFailedTimes == 0) return true
-            return System.currentTimeMillis() - requestFailedTimes > adBlockLoaderTime
+            return System.currentTimeMillis() - timeRequestFailed > adBlockLoaderTime
         }
 
     fun reset() {

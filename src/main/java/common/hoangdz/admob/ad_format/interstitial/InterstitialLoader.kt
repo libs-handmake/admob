@@ -13,6 +13,7 @@ import common.hoangdz.admob.ad_format.listener.AdLoaderListener
 import common.hoangdz.admob.config.ad_id.AdIds
 import common.hoangdz.admob.config.shared.AdShared
 import common.hoangdz.admob.config.water_flow.WaterFlowManager
+import common.hoangdz.lib.extensions.logError
 import common.hoangdz.lib.utils.user.PremiumHolder
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -52,12 +53,15 @@ class InterstitialLoader @Inject constructor(
     override fun show(activity: Activity?, adLoaderListener: AdLoaderListener?): Boolean {
         if (premiumHolder.isPremium || !AdmobLibs.initialized) {
             adLoaderListener?.onInterPassed()
+            logError("failed 1")
             return true
         }
         if (!adShared.canShowInterstitial || !flow.validToRequestAds) {
             adLoaderListener?.onInterPassed()
+            logError("failed 2")
             return false
         }
+        logError("Load 3")
         MobileAds.setAppMuted(true)
         return super.show(activity, adLoaderListener)
     }

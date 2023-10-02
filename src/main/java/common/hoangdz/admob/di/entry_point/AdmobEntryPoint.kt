@@ -1,5 +1,6 @@
 package common.hoangdz.admob.di.entry_point
 
+import common.hoangdz.admob.ad_format.interstitial.InterstitialLoader
 import common.hoangdz.admob.config.remote.AdRemoteConfig
 import common.hoangdz.admob.config.shared.AdShared
 import dagger.hilt.EntryPoint
@@ -11,5 +12,7 @@ import dagger.hilt.components.SingletonComponent
 interface AdmobEntryPoint {
     fun adRemoteConfig(): AdRemoteConfig
 
-    fun adsShared():AdShared
+    fun adsShared(): AdShared
+
+    fun interstitialLoader(): InterstitialLoader
 }

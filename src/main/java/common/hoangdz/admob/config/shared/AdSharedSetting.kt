@@ -3,9 +3,9 @@ package common.hoangdz.admob.config.shared
 object AdSharedSetting {
     val MAX_NATIVE_AD_THRESHOLD = "max_native_ad_threshold" to 5
 
-    val MIN_GAP_WATER_FLOOR = "min_gap_water_floor" to 5000L
+    val MIN_GAP_WATER_FLOOR = "min_gap_water_floor" to 5_000L
 
-    val MAX_GAP_WATER_FLOOR = "max_gap_water_floor" to 3000L
+    val MAX_GAP_WATER_FLOOR = "max_gap_water_floor" to 30_000L
 
     val IGNORED_GAP_THRESHOLD = "ignored_gap_threshold" to 0
 
