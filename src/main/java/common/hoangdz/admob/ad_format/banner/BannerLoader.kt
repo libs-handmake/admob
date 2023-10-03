@@ -8,7 +8,6 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import common.hoangdz.admob.config.ad_id.AdIds
-import common.hoangdz.lib.extensions.logError
 import common.hoangdz.lib.extensions.screenSize
 import common.hoangdz.lib.utils.user.PremiumHolder
 import common.hoangdz.lib.viewmodels.DataResult
@@ -37,7 +36,6 @@ class BannerLoader @Inject constructor(
             adLoaderState.value = DataResult(DataResult.DataState.ERROR)
             return
         }
-        logError("BannerLoader Load Ads for ${adView.hashCode()}")
         adLoaderState.value = DataResult(DataResult.DataState.LOADING)
         adView.adUnitId = adIds.bannerID
         adView.setAdSize(getAdSize(adView))
@@ -52,7 +50,6 @@ class BannerLoader @Inject constructor(
 
             override fun onAdFailedToLoad(p0: LoadAdError) {
                 super.onAdFailedToLoad(p0)
-                logError("BannerLoader failed")
                 adLoaderState.value = DataResult(DataResult.DataState.ERROR)
             }
         }

@@ -8,7 +8,6 @@ import com.google.android.gms.ads.nativead.NativeAd
 import common.hoangdz.admob.ad_format.banner.BannerLoader
 import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdsLoader
 import common.hoangdz.lib.extensions.launchIO
-import common.hoangdz.lib.extensions.logError
 import common.hoangdz.lib.viewmodels.AppViewModel
 import common.hoangdz.lib.viewmodels.DataResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,7 +55,6 @@ class AdFormatViewModel @Inject constructor(
         synchronized(nativeAdMapper) {
             nativeAdMapper.entries.forEach {
                 it.value.value.value?.destroy()
-                logError("destroy native ad for ${it.key}")
             }
             nativeAdMapper.clear()
         }

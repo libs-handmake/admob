@@ -15,7 +15,6 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import common.hoangdz.admob.R
 import common.hoangdz.lib.extensions.gone
 import common.hoangdz.lib.extensions.layoutInflater
-import common.hoangdz.lib.extensions.logError
 import common.hoangdz.lib.extensions.visible
 
 class NativeAdAndroidView : FrameLayout {
@@ -65,7 +64,6 @@ class NativeAdAndroidView : FrameLayout {
             gone()
             return
         }
-        logError("bindADS")
         startBindAds(nativeAd)
     }
 
