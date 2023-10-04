@@ -10,6 +10,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import common.hoangdz.admob.AdmobLibs
 import common.hoangdz.admob.ad_format.FullScreenAdsLoader
 import common.hoangdz.admob.ad_format.listener.AdLoaderListener
+import common.hoangdz.admob.config.AdState
 import common.hoangdz.admob.config.ad_id.AdIds
 import common.hoangdz.admob.config.shared.AdShared
 import common.hoangdz.admob.config.water_flow.WaterFlowManager
@@ -47,6 +48,10 @@ class InterstitialLoader @Inject constructor(
         } else {
             flow.failed()
         }
+    }
+
+    override fun onTimeShowSaved() {
+        AdState.lastTimeShowInterAds = System.currentTimeMillis()
     }
 
     override fun show(activity: Activity?, adLoaderListener: AdLoaderListener?): Boolean {

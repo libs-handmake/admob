@@ -26,6 +26,8 @@ abstract class FullScreenAdsLoader<AD> {
 
     var availableAd: AD? = null
 
+    abstract fun onTimeShowSaved()
+
     fun getFullScreenContentCallback(
         adLoaderListener: AdLoaderListener? = null
     ) = object : FullScreenContentCallback() {
@@ -36,7 +38,7 @@ abstract class FullScreenAdsLoader<AD> {
             adLoaderListener?.onInterPassed()
             adLoaderListener?.onAdFailedToShow()
             onLoadNextAds()
-            AdState.lastTimeShowInterAds = System.currentTimeMillis()
+            onTimeShowSaved()
         }
 
         override fun onAdDismissedFullScreenContent() {
@@ -46,10 +48,11 @@ abstract class FullScreenAdsLoader<AD> {
             adLoaderListener?.onInterPassed()
             availableAd = null
             onLoadNextAds()
-            AdState.lastTimeShowInterAds = System.currentTimeMillis()
+            onTimeShowSaved()
         }
 
         override fun onAdShowedFullScreenContent() {
+            onTimeShowSaved()
             adLoaderListener?.onAdStartShow()
         }
     }

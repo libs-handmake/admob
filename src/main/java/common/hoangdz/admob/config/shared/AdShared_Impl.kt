@@ -69,5 +69,7 @@ class AdShared_Impl(context: Context) : PreferenceHelper(context), AdShared {
         get() {
             return System.currentTimeMillis() - AdState.lastTimeShowInterAds > interstitialGap && System.currentTimeMillis() - AdState.lastTimeShowAppOpenAds > fullScreenGap && canShowFullScreenAds
         }
+    override val canShowAppOpen: Boolean
+        get() = System.currentTimeMillis() - AdState.lastTimeShowAppOpenAds > appOpenGap && System.currentTimeMillis() - AdState.lastTimeShowInterAds > fullScreenGap && canShowFullScreenAds
 
 }

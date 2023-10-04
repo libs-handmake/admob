@@ -10,11 +10,13 @@ class AdmobLibs {
     companion object {
         var initialized = false
         fun initialize(context: Context) {
-            context.appInject<AdmobEntryPoint>().adRemoteConfig().fetchRemoteConfig()
+            val admobEntryPoint = context.appInject<AdmobEntryPoint>()
+            admobEntryPoint.adRemoteConfig().fetchRemoteConfig()
             MobileAds.initialize(context) {
                 initialized = true
                 RequestConfiguration.Builder()
                     .setTestDeviceIds(listOf("812201C6E5F501E98EA1298F4A034968"))
+                admobEntryPoint.appOpenLoader().load()
             }
         }
     }

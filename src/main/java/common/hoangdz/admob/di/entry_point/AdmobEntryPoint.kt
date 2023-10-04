@@ -1,5 +1,6 @@
 package common.hoangdz.admob.di.entry_point
 
+import common.hoangdz.admob.ad_format.app_open.AppOpenLoader
 import common.hoangdz.admob.ad_format.interstitial.InterstitialLoader
 import common.hoangdz.admob.config.remote.AdRemoteConfig
 import common.hoangdz.admob.config.shared.AdShared
@@ -15,4 +16,6 @@ interface AdmobEntryPoint {
     fun adsShared(): AdShared
 
     fun interstitialLoader(): InterstitialLoader
+
+    fun appOpenLoader(): AppOpenLoader
 }
