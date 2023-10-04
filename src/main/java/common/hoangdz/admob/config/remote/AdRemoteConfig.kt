@@ -23,6 +23,7 @@ class AdRemoteConfig @Inject constructor(private val adShared: AdShared) {
         val settings = remoteConfigSettings {
             minimumFetchIntervalInSeconds = 3600L
         }
+        remote.setConfigSettingsAsync(settings)
         remote.setDefaultsAsync(
             mapOf(
                 MAX_NATIVE_AD_THRESHOLD.first to adShared.nativeLoaderThreshold,
