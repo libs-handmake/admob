@@ -8,7 +8,9 @@ import common.hoangdz.lib.jetpack_compose.navigation.ScreenNavConfig
 abstract class ScreenNavConfigAds<T> : ScreenNavConfig<T>() {
 
     override fun onBackPressed(activity: Activity?, configs: ScreenConfigs): Boolean {
-        configs.popNavigationWithAds(activity ?: return true)
+        if (!super.onBackPressed(activity, configs)) configs.popNavigationWithAds(
+            activity ?: return true
+        )
         return true
     }
 }

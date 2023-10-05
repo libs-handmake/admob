@@ -33,6 +33,10 @@ class AppOpenLoader @Inject constructor(
 
     private var currentActivity: Activity? = null
 
+    companion object {
+        var disableToShow = false
+    }
+
     init {
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
@@ -68,7 +72,7 @@ class AppOpenLoader @Inject constructor(
     }
 
     override fun show(activity: Activity?, adLoaderListener: AdLoaderListener?): Boolean {
-        if (premiumHolder.isPremium || !AdmobLibs.initialized) {
+        if (premiumHolder.isPremium || !AdmobLibs.initialized || disableToShow) {
             adLoaderListener?.onInterPassed()
             return true
         }
@@ -106,6 +110,7 @@ class AppOpenLoader @Inject constructor(
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         if (event == Lifecycle.Event.ON_RESUME) {
             show(currentActivity)
+            disableToShow = false
         }
     }
 }

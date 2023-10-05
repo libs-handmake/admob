@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
@@ -21,23 +24,29 @@ fun NativeAdView(
     adViewModel: AdFormatViewModel,
     requestID: String,
     loading: (@Composable () -> Unit)? = null,
+    onLoaded: (() -> Unit)? = null,
     androidView: (Context, nativeAD: StateFlow<DataResult<NativeAd>>, owner: LifecycleOwner) -> NativeAdAndroidView
 ) {
+    var callLoaded by remember {
+        mutableStateOf(false)
+    }
     val adState = adViewModel.loadNativeAds(requestID)
     val adStateCollector by adState.collectWhenResume()
     val owner = LocalLifecycleOwner.current
     if (adStateCollector.state == DataResult.DataState.ERROR) return
     Box(Modifier.fillMaxWidth()) {
         Box(modifier = modifier) {
-            if (adStateCollector.state == DataResult.DataState.LOADED) AndroidView(
-                modifier = Modifier.fillMaxWidth(),
+            if (adStateCollector.state == DataResult.DataState.LOADED) AndroidView(modifier = Modifier.fillMaxWidth(),
                 factory = {
                     androidView(it, adState, owner)
                 },
                 update = {
                     it.bindAds(adStateCollector.value)
+                    if (callLoaded) return@AndroidView
+                    callLoaded = true
+                    onLoaded?.invoke()
                 })
-            if (adStateCollector.state == DataResult.DataState.LOADING) loading?.invoke()
+            if (adStateCollector.state == DataResult.DataState.LOADING || adStateCollector.state == DataResult.DataState.IDLE) loading?.invoke()
         }
     }
 }

@@ -13,11 +13,18 @@ fun ScreenConfigs.navigateWithAds(route: String, replacement: Boolean) {
 }
 
 fun ScreenConfigs.navigateWithAds(
-    route: String, activity: Activity?, replacement: Boolean = false
+    route: String, activity: Activity?, replacement: Boolean = false, ignoredAds: Boolean = false
 ) {
-    activity?.invokeWithInterstitial {
+    fun navigate() {
         if (replacement) navigateAndReplace(route)
         else navController.navigate(route)
+    }
+    if (ignoredAds) {
+        navigate()
+        return
+    }
+    activity?.invokeWithInterstitial {
+        navigate()
     }
 }
 

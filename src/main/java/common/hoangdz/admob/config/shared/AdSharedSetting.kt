@@ -11,7 +11,7 @@ object AdSharedSetting {
 
     val USE_WATER_FLOW = "use_water_flow" to false
 
-    val INTER_GAP = "inter_gap" to 10_000L
+    val INTER_GAP = "inter_gap" to 60_000L
 
     val APP_OPEN_GAP = "app_open_gap" to 0L
 
