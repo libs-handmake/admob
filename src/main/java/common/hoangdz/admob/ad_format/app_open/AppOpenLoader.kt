@@ -67,6 +67,13 @@ class AppOpenLoader @Inject constructor(
             })
     }
 
+    override fun onLoaded(ad: AppOpenAd) {
+        super.onLoaded(ad)
+        ad.setOnPaidEventListener {
+            AdState.onPaidEvent?.invoke(it, ad.responseInfo)
+        }
+    }
+
     override fun onTimeShowSaved() {
         AdState.lastTimeShowAppOpenAds = System.currentTimeMillis()
     }

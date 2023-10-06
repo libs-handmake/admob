@@ -7,6 +7,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
+import common.hoangdz.admob.config.AdState
 import common.hoangdz.admob.config.ad_id.AdIds
 import common.hoangdz.lib.extensions.screenSize
 import common.hoangdz.lib.utils.user.PremiumHolder
@@ -39,6 +40,9 @@ class BannerLoader @Inject constructor(
         adLoaderState.value = DataResult(DataResult.DataState.LOADING)
         adView.adUnitId = adIds.bannerID
         adView.setAdSize(getAdSize(adView))
+        adView.setOnPaidEventListener {
+            AdState.onPaidEvent?.invoke(it, adView.responseInfo ?: return@setOnPaidEventListener)
+        }
         adView.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 super.onAdLoaded()

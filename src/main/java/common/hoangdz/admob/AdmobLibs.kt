@@ -14,8 +14,12 @@ class AdmobLibs {
             admobEntryPoint.adRemoteConfig().fetchRemoteConfig()
             MobileAds.initialize(context) {
                 initialized = true
-                RequestConfiguration.Builder()
-                    .setTestDeviceIds(listOf("812201C6E5F501E98EA1298F4A034968"))
+                RequestConfiguration.Builder().setTestDeviceIds(
+                        listOf(
+                            "812201C6E5F501E98EA1298F4A034968",
+                            "D5A455C4AEA084A209D8A63ED9DE9483"
+                        )
+                    )
                 admobEntryPoint.appOpenLoader().load()
             }
         }

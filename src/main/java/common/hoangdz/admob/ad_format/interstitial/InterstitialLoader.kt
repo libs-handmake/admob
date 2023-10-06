@@ -38,6 +38,9 @@ class InterstitialLoader @Inject constructor(
     override fun onLoaded(ad: InterstitialAd) {
         super.onLoaded(ad)
         flow.reset()
+        ad.setOnPaidEventListener {
+            AdState.onPaidEvent?.invoke(it, ad.responseInfo)
+        }
     }
 
     override fun onFailedToLoad(adLoaderListener: AdLoaderListener?) {

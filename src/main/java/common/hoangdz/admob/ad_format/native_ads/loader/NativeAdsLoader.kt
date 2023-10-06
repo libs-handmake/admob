@@ -7,6 +7,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.admanager.AdManagerAdRequest
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
+import common.hoangdz.admob.config.AdState
 import common.hoangdz.admob.config.ad_id.AdIds
 import common.hoangdz.admob.config.shared.AdShared
 import common.hoangdz.lib.extensions.availableToLoad
@@ -29,6 +30,12 @@ class NativeAdsLoader @Inject constructor(
 
     private val adLoader by lazy {
         AdLoader.Builder(context, adIds.nativeID).forNativeAd {
+            it.setOnPaidEventListener { adValue ->
+                AdState.onPaidEvent?.invoke(
+                    adValue,
+                    it.responseInfo ?: return@setOnPaidEventListener
+                )
+            }
             nativeAdHolder.appendNativeAd(it)
             distributeAds(false)
         }.withAdListener(object : AdListener() {
