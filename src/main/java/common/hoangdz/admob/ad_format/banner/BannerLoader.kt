@@ -65,7 +65,7 @@ class BannerLoader @Inject constructor(
         if (adWidthPixels == 0f) {
             adWidthPixels = context.screenSize.first * 1f
         }
-        val density: Float = context.resources.displayMetrics.density
+        val density: Float = context.resources.displayMetrics.density.takeIf { it > 0f } ?: 100f
         val adWidth = (adWidthPixels / density).toInt()
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidth)
     }
