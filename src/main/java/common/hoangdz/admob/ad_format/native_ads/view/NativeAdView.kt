@@ -14,13 +14,14 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.gms.ads.nativead.NativeAd
 import common.hoangdz.admob.ad_format.AdFormatViewModel
+import common.hoangdz.lib.jetpack_compose.exts.SafeModifier
 import common.hoangdz.lib.jetpack_compose.exts.collectWhenResume
 import common.hoangdz.lib.viewmodels.DataResult
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun NativeAdView(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = SafeModifier,
     adViewModel: AdFormatViewModel,
     requestID: String,
     loading: (@Composable () -> Unit)? = null,
@@ -34,9 +35,9 @@ fun NativeAdView(
     val adStateCollector by adState.collectWhenResume()
     val owner = LocalLifecycleOwner.current
     if (adStateCollector.state == DataResult.DataState.ERROR) return
-    Box(Modifier.fillMaxWidth()) {
+    Box(SafeModifier.fillMaxWidth()) {
         Box(modifier = modifier) {
-            if (adStateCollector.state == DataResult.DataState.LOADED) AndroidView(modifier = Modifier.fillMaxWidth(),
+            if (adStateCollector.state == DataResult.DataState.LOADED) AndroidView(modifier = SafeModifier.fillMaxWidth(),
                 factory = {
                     androidView(it, adState, owner)
                 },
