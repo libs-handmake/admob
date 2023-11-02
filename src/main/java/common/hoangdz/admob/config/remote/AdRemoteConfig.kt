@@ -17,8 +17,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AdRemoteConfig @Inject constructor(private val adShared: AdShared) {
-    fun fetchRemoteConfig() {
+class AdRemoteConfig @Inject constructor(
+    private val adShared: AdShared
+) {
+    fun fetchRemoteConfig(onRemoteFetched: () -> Unit) {
         val remote = Firebase.remoteConfig
         val settings = remoteConfigSettings {
             minimumFetchIntervalInSeconds = 3600L
@@ -39,6 +41,7 @@ class AdRemoteConfig @Inject constructor(private val adShared: AdShared) {
         remote.fetchAndActivate().addOnCompleteListener {
             if (it.isSuccessful) {
                 saveRemoteData(remote)
+                onRemoteFetched()
             }
         }
     }

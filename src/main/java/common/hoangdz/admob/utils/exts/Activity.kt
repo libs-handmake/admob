@@ -5,11 +5,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import common.hoangdz.admob.ad_format.listener.AdLoaderListener
 import common.hoangdz.admob.di.entry_point.AdmobEntryPoint
 import common.hoangdz.lib.extensions.appInject
 import common.hoangdz.lib.extensions.getActivity
+import common.hoangdz.lib.extensions.launchIO
 import common.hoangdz.lib.extensions.launchWhen
+import common.hoangdz.lib.lifecycle.ActivityLifecycleManager
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 
 @Composable
 fun invokeWithInterstitial(onInterPassed: () -> Unit) {
@@ -21,8 +26,21 @@ fun Activity.invokeWithInterstitial(onInterPassed: () -> Unit) {
         val interLoader = appInject<AdmobEntryPoint>().interstitialLoader()
         interLoader.show(this, object : AdLoaderListener() {
             override fun onInterPassed() {
-                launchWhen(Lifecycle.State.RESUMED) {
-                    onInterPassed()
+                GlobalScope.launchIO {
+                    var owner: LifecycleOwner? = null
+                    var tryAgain = 0
+                    while (ActivityLifecycleManager[this@invokeWithInterstitial]?.also {
+                            owner = it
+                        } == null) {
+                        if (tryAgain == 3) return@launchIO
+                        tryAgain++
+                        delay(500)
+                    }
+                    owner?.launchWhen(
+                        Lifecycle.State.RESUMED
+                    ) {
+                        onInterPassed()
+                    }
                 }
             }
         })

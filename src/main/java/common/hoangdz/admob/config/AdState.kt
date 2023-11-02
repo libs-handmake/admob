@@ -11,4 +11,6 @@ object AdState {
 
     var onPaidEvent: ((AdValue, ResponseInfo) -> Unit)? = null
 
+    var forceInterGap: Long? = null
+
 }

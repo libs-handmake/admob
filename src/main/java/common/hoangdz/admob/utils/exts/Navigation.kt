@@ -17,7 +17,7 @@ fun ScreenConfigs.navigateWithAds(
 ) {
     fun navigate() {
         if (replacement) navigateAndReplace(route)
-        else navController.navigate(route)
+        else ScreenConfigs.navController?.navigate(route)
     }
     if (ignoredAds) {
         navigate()
@@ -38,6 +38,6 @@ fun ScreenConfigs.popNavigationWithAds(
     activity: Activity?,
 ) {
     activity?.invokeWithInterstitial {
-        navController.popBackStack()
+        ScreenConfigs.navController?.popBackStack()
     }
 }
