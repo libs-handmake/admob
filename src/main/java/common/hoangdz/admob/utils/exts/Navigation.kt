@@ -16,8 +16,10 @@ fun ScreenConfigs.navigateWithAds(
     route: String, activity: Activity?, replacement: Boolean = false, ignoredAds: Boolean = false
 ) {
     fun navigate() {
-        if (replacement) navigateAndReplace(route)
-        else ScreenConfigs.navController?.navigate(route)
+        kotlin.runCatching {
+            if (replacement) navigateAndReplace(route)
+            else ScreenConfigs.navController?.navigate(route)
+        }
     }
     if (ignoredAds) {
         navigate()
