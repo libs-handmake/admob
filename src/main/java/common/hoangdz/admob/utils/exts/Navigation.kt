@@ -31,15 +31,18 @@ fun ScreenConfigs.navigateWithAds(
 }
 
 @Composable
-fun ScreenConfigs.popNavigationWithAds() {
+fun ScreenConfigs.popNavigationWithAds(
+    navID: String? = null,
+) {
     val activity = LocalContext.current.getActivity() ?: return
-    popNavigationWithAds(activity)
+    popNavigationWithAds(activity, navID)
 }
 
 fun ScreenConfigs.popNavigationWithAds(
-    activity: Activity?,
+    activity: Activity?, navID: String? = null
 ) {
     activity?.invokeWithInterstitial {
-        ScreenConfigs.navController?.popBackStack()
+        if (navID.isNullOrEmpty()) ScreenConfigs.navController?.popBackStack()
+        else ScreenConfigs.navController?.popBackStack(navID, true)
     }
 }
