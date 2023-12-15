@@ -55,6 +55,7 @@ dependencies {
     implementation(project(":base:android-common"))
     implementation(Deps.ADMOB)
     implementation(Deps.SHIMMER_COMPOSE)
+    implementation(AdmobDeps.USER_MESSAGE_PLATFORM)
 }
 
 kapt {
