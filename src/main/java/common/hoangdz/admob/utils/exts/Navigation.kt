@@ -39,10 +39,17 @@ fun ScreenConfigs.popNavigationWithAds(
 }
 
 fun ScreenConfigs.popNavigationWithAds(
-    activity: Activity?, navID: String? = null
+    activity: Activity?, navID: String? = null, ignoredAds: Boolean = true
 ) {
-    activity?.invokeWithInterstitial {
+    fun pop() {
         if (navID.isNullOrEmpty()) ScreenConfigs.navController?.popBackStack()
         else ScreenConfigs.navController?.popBackStack(navID, true)
+    }
+    if (ignoredAds) {
+        pop()
+        return
+    }
+    activity?.invokeWithInterstitial {
+        pop()
     }
 }
