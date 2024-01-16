@@ -16,7 +16,9 @@ class UserConsentRequester {
         ) {
             val debugSetting = ConsentDebugSettings.Builder(activity)
                 .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
-                .addTestDeviceHashedId("5E9443F94E7A3271A01B7F72618F3CFB").build()
+                .addTestDeviceHashedId("5E9443F94E7A3271A01B7F72618F3CFB")
+                .addTestDeviceHashedId("812201C6E5F501E98EA1298F4A034968")
+                .build()
 
             val params = ConsentRequestParameters.Builder().setConsentDebugSettings(debugSetting)
                 .setTagForUnderAgeOfConsent(false).build()

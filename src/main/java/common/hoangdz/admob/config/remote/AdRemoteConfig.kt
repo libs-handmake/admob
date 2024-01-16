@@ -20,14 +20,14 @@ import javax.inject.Singleton
 class AdRemoteConfig @Inject constructor(
     private val adShared: AdShared
 ) {
-    fun fetchRemoteConfig(onRemoteFetched: () -> Unit) {
+    fun fetchRemoteConfig(remoteConfigDefault: Map<String,Any>, onRemoteFetched: (config: FirebaseRemoteConfig) -> Unit) {
         val remote = Firebase.remoteConfig
         val settings = remoteConfigSettings {
             minimumFetchIntervalInSeconds = 3600L
         }
         remote.setConfigSettingsAsync(settings)
         remote.setDefaultsAsync(
-            mapOf(
+            hashMapOf<String,Any>(
                 MAX_NATIVE_AD_THRESHOLD.first to adShared.nativeLoaderThreshold,
                 MIN_GAP_WATER_FLOOR.first to adShared.minGapWaterFloor,
                 MAX_GAP_WATER_FLOOR.first to adShared.maxGapWaterFloor,
@@ -36,12 +36,14 @@ class AdRemoteConfig @Inject constructor(
                 INTER_GAP.first to adShared.interstitialGap,
                 APP_OPEN_GAP.first to adShared.appOpenGap,
                 FULL_SCREEN_GAP.first to adShared.fullScreenGap
-            )
+            ).also {
+                it.putAll(remoteConfigDefault)
+            }.toMap()
         )
         remote.fetchAndActivate().addOnCompleteListener {
             if (it.isSuccessful) {
                 saveRemoteData(remote)
-                onRemoteFetched()
+                onRemoteFetched(remote)
             }
         }
     }

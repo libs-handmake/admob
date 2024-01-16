@@ -45,7 +45,6 @@ abstract class FullScreenAdsLoader<AD> {
             showing = false
             loaderState = DataResult.DataState.IDLE
             adLoaderListener?.onAdClosed()
-            adLoaderListener?.onInterPassed()
             availableAd = null
             onLoadNextAds()
             onTimeShowSaved()
@@ -54,6 +53,7 @@ abstract class FullScreenAdsLoader<AD> {
         override fun onAdShowedFullScreenContent() {
             onTimeShowSaved()
             adLoaderListener?.onAdStartShow()
+            adLoaderListener?.onInterPassed()
         }
     }
 
