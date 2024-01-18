@@ -25,7 +25,13 @@ fun ScreenConfigs.navigateWithAds(
         navigate()
         return
     }
-    activity?.invokeWithInterstitial {
+    activity?.invokeWithInterstitial(
+        "${
+            this.route.replace(
+                "(\\?.*)".toRegex(), ""
+            )
+        }___${route.replace("(\\?.*)".toRegex(), "")}"
+    ) {
         navigate()
     }
 }
@@ -49,7 +55,7 @@ fun ScreenConfigs.popNavigationWithAds(
         pop()
         return
     }
-    activity?.invokeWithInterstitial {
+    activity?.invokeWithInterstitial("pop_${this.route.replace("\\?.*".toRegex(), "")}") {
         pop()
     }
 }

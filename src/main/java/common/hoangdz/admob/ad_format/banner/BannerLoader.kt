@@ -1,12 +1,15 @@
 package common.hoangdz.admob.ad_format.banner
 
 import android.content.Context
+import androidx.core.os.bundleOf
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import common.hoangdz.admob.config.AdState
 import common.hoangdz.admob.config.ad_id.AdIds
 import common.hoangdz.lib.extensions.screenSize
@@ -24,13 +27,16 @@ class BannerLoader @Inject constructor(
     private val premiumHolder: PremiumHolder
 ) {
     fun loadBannerAd(
-        adView: AdView, owner: LifecycleOwner, adLoaderState: MutableStateFlow<DataResult<AdView>>
+        screenName: String,
+        adView: AdView,
+        owner: LifecycleOwner,
+        adLoaderState: MutableStateFlow<DataResult<AdView>>
     ) {
-        loadAD(adView, adLoaderState)
+        loadAD(screenName, adView, adLoaderState)
     }
 
     private fun loadAD(
-        adView: AdView, adLoaderState: MutableStateFlow<DataResult<AdView>>
+        screenName: String, adView: AdView, adLoaderState: MutableStateFlow<DataResult<AdView>>
     ) {
         if (!adView.adUnitId.isNullOrEmpty() || adView.isLoading) return
         if (premiumHolder.isPremium) {
@@ -44,6 +50,17 @@ class BannerLoader @Inject constructor(
             AdState.onPaidEvent?.invoke(it, adView.responseInfo ?: return@setOnPaidEventListener)
         }
         adView.adListener = object : AdListener() {
+
+            override fun onAdImpression() {
+                Firebase.analytics.logEvent(
+                    "banner_impression", bundleOf("screen_name" to screenName)
+                )
+            }
+
+            override fun onAdClicked() {
+                Firebase.analytics.logEvent("banner_ad_clicked", bundleOf("screen" to screenName))
+            }
+
             override fun onAdLoaded() {
                 super.onAdLoaded()
                 adLoaderState.value =

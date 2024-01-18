@@ -16,6 +16,7 @@ import common.hoangdz.admob.ad_format.AdFormatViewModel
 import common.hoangdz.lib.jetpack_compose.exts.SafeModifier
 import common.hoangdz.lib.jetpack_compose.exts.collectWhenResume
 import common.hoangdz.lib.jetpack_compose.exts.shimmerEffect
+import common.hoangdz.lib.jetpack_compose.navigation.LocalScreenConfigs
 import common.hoangdz.lib.viewmodels.DataResult
 import ir.kaaveh.sdpcompose.sdp
 
@@ -24,10 +25,15 @@ fun BannerView(adFormatViewModel: AdFormatViewModel = hiltViewModel()) {
     val owner = LocalLifecycleOwner.current
     val loaderStateCollection by adFormatViewModel.bannerLoaderState.collectWhenResume()
     if (loaderStateCollection.state != DataResult.DataState.ERROR) {
+        val config = LocalScreenConfigs.current
         Box {
             AndroidView(modifier = SafeModifier.fillMaxWidth(), factory = {
                 return@AndroidView AdView(it).also { view ->
-                    adFormatViewModel.loadBanner(view, owner)
+                    adFormatViewModel.loadBanner(
+                        config.route.replace("\\?.*".toRegex(), ""),
+                        view,
+                        owner
+                    )
                 }
             })
             if (loaderStateCollection.state == DataResult.DataState.LOADING) {
@@ -43,7 +49,6 @@ fun BannerView(adFormatViewModel: AdFormatViewModel = hiltViewModel()) {
                             .height(50.sdp)
                             .padding(start = 8.sdp)
                             .shimmerEffect()
-
                     )
                 }
             }

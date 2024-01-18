@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.nativead.NativeAd
 import common.hoangdz.admob.ad_format.banner.BannerLoader
+import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdQueue
 import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdsLoader
 import common.hoangdz.lib.extensions.launchIO
 import common.hoangdz.lib.viewmodels.AppViewModel
@@ -31,9 +32,9 @@ class AdFormatViewModel @Inject constructor(
     val bannerLoaderState by lazy { _bannerLoaderState.asStateFlow() }
 
     fun loadBanner(
-        adView: AdView, owner: LifecycleOwner
+        screenName: String, adView: AdView, owner: LifecycleOwner
     ) {
-        bannerLoader.loadBannerAd(adView, owner, _bannerLoaderState)
+        bannerLoader.loadBannerAd(screenName, adView, owner, _bannerLoaderState)
     }
 
     fun loadNativeAds(requestId: String): MutableStateFlow<DataResult<NativeAd>> {
@@ -45,7 +46,7 @@ class AdFormatViewModel @Inject constructor(
             ).also { nativeAdMapper[requestId] = it }
         }
         viewModelScope.launchIO {
-            nativeAdsLoader.enqueueNativeAds(nativeLoaderState)
+            nativeAdsLoader.enqueueNativeAds(NativeAdQueue(requestId, nativeLoaderState))
         }
         return nativeLoaderState
     }

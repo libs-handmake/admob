@@ -6,7 +6,6 @@ import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.FullScreenContentCallback
 import common.hoangdz.admob.AdmobLibs
 import common.hoangdz.admob.ad_format.listener.AdLoaderListener
-import common.hoangdz.admob.config.AdState
 import common.hoangdz.lib.viewmodels.DataResult
 
 abstract class FullScreenAdsLoader<AD> {
@@ -31,6 +30,11 @@ abstract class FullScreenAdsLoader<AD> {
     fun getFullScreenContentCallback(
         adLoaderListener: AdLoaderListener? = null
     ) = object : FullScreenContentCallback() {
+        override fun onAdClicked() {
+            super.onAdClicked()
+            adLoaderListener?.onAdClicked()
+        }
+
         override fun onAdFailedToShowFullScreenContent(p0: AdError) {
             showing = false
             availableAd = null

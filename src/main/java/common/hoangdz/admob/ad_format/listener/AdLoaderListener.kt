@@ -5,6 +5,10 @@ abstract class AdLoaderListener {
 
     open fun onAdConsume() {}
 
+    open fun onAdClicked() {
+
+    }
+
     open fun onAdStartShow() {}
 
     open fun onAdClosed() {}
