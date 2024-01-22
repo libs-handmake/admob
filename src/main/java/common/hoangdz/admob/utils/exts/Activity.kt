@@ -31,7 +31,7 @@ fun Activity.invokeWithInterstitial(screenName: String, onInterPassed: () -> Uni
         val interLoader = appInject<AdmobEntryPoint>().interstitialLoader()
         interLoader.show(this, object : AdLoaderListener() {
             override fun onAdClicked() {
-                Firebase.analytics.logEvent("inter_clicked", bundleOf("screen" to screenName))
+                Firebase.analytics.logEvent("inter_clicked_$screenName", bundleOf())
             }
 
             override fun onInterPassed() {

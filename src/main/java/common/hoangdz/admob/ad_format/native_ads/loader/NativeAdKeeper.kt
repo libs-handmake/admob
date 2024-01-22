@@ -35,11 +35,11 @@ data class NativeAdKeeper(
         }.withAdListener(object : AdListener() {
             override fun onAdOpened() {
                 super.onAdOpened()
-                Firebase.analytics.logEvent("native_ad_clicked", bundleOf("loader_id" to loaderID))
+                Firebase.analytics.logEvent("native_ad_clicked_$loaderID", bundleOf())
             }
 
             override fun onAdImpression() {
-                Firebase.analytics.logEvent("native_ad_impression", bundleOf("loader_id" to loaderID))
+                Firebase.analytics.logEvent("native_ad_impression_$loaderID", bundleOf())
             }
 
             override fun onAdFailedToLoad(p0: LoadAdError) {

@@ -53,12 +53,12 @@ class BannerLoader @Inject constructor(
 
             override fun onAdImpression() {
                 Firebase.analytics.logEvent(
-                    "banner_impression", bundleOf("screen_name" to screenName)
+                    "banner_impression_$screenName", bundleOf()
                 )
             }
 
             override fun onAdClicked() {
-                Firebase.analytics.logEvent("banner_ad_clicked", bundleOf("screen" to screenName))
+                Firebase.analytics.logEvent("banner_ad_clicked_$screenName", bundleOf())
             }
 
             override fun onAdLoaded() {
