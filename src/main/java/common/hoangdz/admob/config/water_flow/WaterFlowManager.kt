@@ -1,6 +1,8 @@
 package common.hoangdz.admob.config.water_flow
 
 import android.content.Context
+import common.hoangdz.admob.BuildConfig
+import common.hoangdz.admob.config.AdState
 import common.hoangdz.admob.di.entry_point.AdmobEntryPoint
 import common.hoangdz.lib.extensions.appInject
 import kotlin.math.max
@@ -26,6 +28,9 @@ class WaterFlowManager(
 
     val currentId: String
         get() {
+            if (!BuildConfig.DEBUG){
+                if (!AdState.overrideInterId.isNullOrEmpty()) return AdState.overrideInterId?: normalIds
+            }
             if (!adsShared.useWaterFlow || forceTurnOffWaterFlow) return normalIds
             return adIds[currentIndex]
         }

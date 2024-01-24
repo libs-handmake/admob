@@ -24,6 +24,7 @@ class AdRemoteConfig @Inject constructor(
         val remote = Firebase.remoteConfig
         val settings = remoteConfigSettings {
             minimumFetchIntervalInSeconds = 3600L
+            fetchTimeoutInSeconds = 15
         }
         remote.setConfigSettingsAsync(settings)
         remote.setDefaultsAsync(
@@ -41,10 +42,8 @@ class AdRemoteConfig @Inject constructor(
             }.toMap()
         )
         remote.fetchAndActivate().addOnCompleteListener {
-            if (it.isSuccessful) {
-                saveRemoteData(remote)
-                onRemoteFetched(remote)
-            }
+            saveRemoteData(remote)
+            onRemoteFetched(remote)
         }
     }
 

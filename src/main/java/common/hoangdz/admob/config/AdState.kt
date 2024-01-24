@@ -9,6 +9,8 @@ object AdState {
 
     var lastTimeShowAppOpenAds = 0L
 
+    var overrideInterId: String? = null
+
     var onPaidEvent: ((AdValue, ResponseInfo) -> Unit)? = null
 
     var forceInterGap: Long? = null
