@@ -26,11 +26,7 @@ fun ScreenConfigs.navigateWithAds(
         return
     }
     activity?.invokeWithInterstitial(
-        "${
-            this.route.replace(
-                "(\\?.*)".toRegex(), ""
-            )
-        }___${route.replace("(\\?.*)".toRegex(), "")}"
+        this.route.replace("\\?.*".toRegex(), "")
     ) {
         navigate()
     }
