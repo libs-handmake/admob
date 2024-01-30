@@ -14,6 +14,7 @@ import common.hoangdz.admob.config.AdState
 import common.hoangdz.admob.config.ad_id.AdIds
 import common.hoangdz.admob.config.shared.AdShared
 import common.hoangdz.admob.config.water_flow.WaterFlowManager
+import common.hoangdz.lib.extensions.logError
 import common.hoangdz.lib.utils.user.PremiumHolder
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -82,16 +83,20 @@ class InterstitialLoader @Inject constructor(
     }
 
     override fun onLoad(adLoaderListener: AdLoaderListener?) {
+        AdState.globalInterListener?.onAdStartLoad()
         InterstitialAd.load(context,
             flow.currentId,
             AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
                 override fun onAdFailedToLoad(p0: LoadAdError) {
                     onFailedToLoad(adLoaderListener)
+                    logError("Interstitial load failed: ${p0.message}")
+                    AdState.globalInterListener?.onAdFailedToLoad()
                 }
 
                 override fun onAdLoaded(ad: InterstitialAd) {
                     onLoaded(ad)
+                    AdState.globalInterListener?.onLoaded()
                 }
             })
     }
