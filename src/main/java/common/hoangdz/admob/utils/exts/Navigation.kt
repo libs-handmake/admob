@@ -9,11 +9,11 @@ import common.hoangdz.lib.jetpack_compose.navigation.ScreenConfigs
 @Composable
 fun ScreenConfigs.navigateWithAds(route: String, replacement: Boolean) {
     val activity = LocalContext.current.getActivity() ?: return
-    navigateWithAds(route, activity, replacement)
+    navigateWithAds(route, activity, null, replacement)
 }
 
 fun ScreenConfigs.navigateWithAds(
-    route: String, activity: Activity?, replacement: Boolean = false, ignoredAds: Boolean = false
+    route: String, activity: Activity?, overrideId:String? = null, replacement: Boolean = false, ignoredAds: Boolean = false
 ) {
     fun navigate() {
         kotlin.runCatching {
@@ -26,7 +26,8 @@ fun ScreenConfigs.navigateWithAds(
         return
     }
     activity?.invokeWithInterstitial(
-        this.route.replace("\\?.*".toRegex(), "")
+        this.route.replace("\\?.*".toRegex(), ""),
+        overrideId = overrideId
     ) {
         navigate()
     }

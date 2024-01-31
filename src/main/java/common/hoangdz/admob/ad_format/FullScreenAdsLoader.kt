@@ -41,7 +41,7 @@ abstract class FullScreenAdsLoader<AD> {
             loaderState = DataResult.DataState.ERROR
             adLoaderListener?.onInterPassed()
             adLoaderListener?.onAdFailedToShow()
-            onLoadNextAds()
+            onLoadNextAds(overrideId = adLoaderListener?.overrideId)
             onTimeShowSaved()
         }
 
@@ -50,7 +50,7 @@ abstract class FullScreenAdsLoader<AD> {
             loaderState = DataResult.DataState.IDLE
             adLoaderListener?.onAdClosed()
             availableAd = null
-            onLoadNextAds()
+            onLoadNextAds(overrideId = adLoaderListener?.overrideId)
             onTimeShowSaved()
         }
 
@@ -85,7 +85,7 @@ abstract class FullScreenAdsLoader<AD> {
         return true
     }
 
-    protected open fun onLoadNextAds() {
+    protected open fun onLoadNextAds(overrideId:String?) {
     }
 
     fun load(adLoaderListener: AdLoaderListener? = null) {

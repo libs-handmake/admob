@@ -23,13 +23,13 @@ import kotlinx.coroutines.delay
 @Composable
 fun invokeWithInterstitial(onInterPassed: () -> Unit) {
     LocalContext.current.getActivity()
-        ?.invokeWithInterstitial(LocalScreenConfigs.current.route, onInterPassed) ?: onInterPassed()
+        ?.invokeWithInterstitial(LocalScreenConfigs.current.route, null, onInterPassed) ?: onInterPassed()
 }
 
-fun Activity.invokeWithInterstitial(screenName: String, onInterPassed: () -> Unit) {
+fun Activity.invokeWithInterstitial(screenName: String, overrideId:String? = null, onInterPassed: () -> Unit) {
     if (this is AppCompatActivity) {
         val interLoader = appInject<AdmobEntryPoint>().interstitialLoader()
-        interLoader.show(this, object : AdLoaderListener() {
+        interLoader.show(this, object : AdLoaderListener(overrideId) {
             override fun onAdClicked() {
                 Firebase.analytics.logEvent("inter_clicked_$screenName", bundleOf())
             }

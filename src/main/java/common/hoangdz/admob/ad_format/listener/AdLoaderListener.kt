@@ -1,9 +1,10 @@
 package common.hoangdz.admob.ad_format.listener
 
-abstract class AdLoaderListener {
+abstract class AdLoaderListener(val overrideId: String? = null) {
+
     open fun onAdFailedToLoad() {}
 
-    open fun onLoaded(){}
+    open fun onLoaded() {}
 
     open fun onAdConsume() {}
 
@@ -19,5 +20,5 @@ abstract class AdLoaderListener {
 
     open fun onInterPassed() {}
 
-    open fun onAdStartLoad(){}
+    open fun onAdStartLoad() {}
 }

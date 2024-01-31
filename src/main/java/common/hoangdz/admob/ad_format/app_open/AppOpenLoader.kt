@@ -87,8 +87,8 @@ class AppOpenLoader @Inject constructor(
         return super.show(activity, adLoaderListener)
     }
 
-    override fun onLoadNextAds() {
-        load()
+    override fun onLoadNextAds(overrideId: String?) {
+        load(object : AdLoaderListener(overrideId) {})
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {

@@ -85,7 +85,7 @@ class InterstitialLoader @Inject constructor(
     override fun onLoad(adLoaderListener: AdLoaderListener?) {
         AdState.globalInterListener?.onAdStartLoad()
         InterstitialAd.load(context,
-            flow.currentId,
+            adLoaderListener?.overrideId ?: flow.currentId,
             AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
                 override fun onAdFailedToLoad(p0: LoadAdError) {
@@ -101,8 +101,8 @@ class InterstitialLoader @Inject constructor(
             })
     }
 
-    override fun onLoadNextAds() {
-        load()
+    override fun onLoadNextAds(overrideId: String?) {
+        load(object : AdLoaderListener(overrideId) {})
     }
 
 }
