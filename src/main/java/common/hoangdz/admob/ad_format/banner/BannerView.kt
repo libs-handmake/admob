@@ -21,7 +21,9 @@ import common.hoangdz.lib.viewmodels.DataResult
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
-fun BannerView(adFormatViewModel: AdFormatViewModel = hiltViewModel()) {
+fun BannerView(
+    usingCollapsible: Boolean = false, adFormatViewModel: AdFormatViewModel = hiltViewModel()
+) {
     val owner = LocalLifecycleOwner.current
     val loaderStateCollection by adFormatViewModel.bannerLoaderState.collectWhenResume()
     if (loaderStateCollection.state != DataResult.DataState.ERROR) {
@@ -30,9 +32,7 @@ fun BannerView(adFormatViewModel: AdFormatViewModel = hiltViewModel()) {
             AndroidView(modifier = SafeModifier.fillMaxWidth(), factory = {
                 return@AndroidView AdView(it).also { view ->
                     adFormatViewModel.loadBanner(
-                        config.route.replace("\\?.*".toRegex(), ""),
-                        view,
-                        owner
+                        config.route.replace("\\?.*".toRegex(), ""), view, usingCollapsible, owner
                     )
                 }
             })

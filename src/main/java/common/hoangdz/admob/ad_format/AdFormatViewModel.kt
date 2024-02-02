@@ -32,9 +32,9 @@ class AdFormatViewModel @Inject constructor(
     val bannerLoaderState by lazy { _bannerLoaderState.asStateFlow() }
 
     fun loadBanner(
-        screenName: String, adView: AdView, owner: LifecycleOwner
+        screenName: String, adView: AdView, useCollapsible :Boolean, owner: LifecycleOwner
     ) {
-        bannerLoader.loadBannerAd(screenName, adView, owner, _bannerLoaderState)
+        bannerLoader.loadBannerAd(screenName, adView, useCollapsible, owner, _bannerLoaderState)
     }
 
     fun loadNativeAds(requestId: String): MutableStateFlow<DataResult<NativeAd>> {

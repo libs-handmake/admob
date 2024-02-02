@@ -3,6 +3,7 @@ package common.hoangdz.admob.ad_format.banner
 import android.content.Context
 import androidx.core.os.bundleOf
 import androidx.lifecycle.LifecycleOwner
+import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -29,14 +30,18 @@ class BannerLoader @Inject constructor(
     fun loadBannerAd(
         screenName: String,
         adView: AdView,
+        useCollapsible: Boolean,
         owner: LifecycleOwner,
         adLoaderState: MutableStateFlow<DataResult<AdView>>
     ) {
-        loadAD(screenName, adView, adLoaderState)
+        loadAD(screenName, adView, useCollapsible, adLoaderState)
     }
 
     private fun loadAD(
-        screenName: String, adView: AdView, adLoaderState: MutableStateFlow<DataResult<AdView>>
+        screenName: String,
+        adView: AdView,
+        useCollapsible: Boolean,
+        adLoaderState: MutableStateFlow<DataResult<AdView>>
     ) {
         if (!adView.adUnitId.isNullOrEmpty() || adView.isLoading) return
         if (premiumHolder.isPremium) {
@@ -74,7 +79,11 @@ class BannerLoader @Inject constructor(
                 adLoaderState.value = DataResult(DataResult.DataState.ERROR)
             }
         }
-        adView.loadAd(AdRequest.Builder().build())
+        val extras = bundleOf("collapsible" to "bottom").takeIf { useCollapsible }
+        val request = AdRequest.Builder().let {
+            extras?.let { e -> it.addNetworkExtrasBundle(AdMobAdapter::class.java, e) } ?: it
+        }.build()
+        adView.loadAd(request)
     }
 
     private fun getAdSize(adView: AdView): AdSize {
