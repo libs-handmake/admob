@@ -18,6 +18,7 @@ import common.hoangdz.lib.utils.user.PremiumHolder
 import common.hoangdz.lib.viewmodels.DataResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -79,7 +80,10 @@ class BannerLoader @Inject constructor(
                 adLoaderState.value = DataResult(DataResult.DataState.ERROR)
             }
         }
-        val extras = bundleOf("collapsible" to "bottom").takeIf { useCollapsible }
+        val extras = bundleOf(
+            "collapsible" to "bottom",
+            "collapsible_request_id" to UUID.randomUUID().toString()
+        ).takeIf { useCollapsible }
         val request = AdRequest.Builder().let {
             extras?.let { e -> it.addNetworkExtrasBundle(AdMobAdapter::class.java, e) } ?: it
         }.build()
