@@ -52,7 +52,7 @@ class AppOpenLoader @Inject constructor(
         availableAd.show(activity ?: return)
     }
 
-    override fun onLoad(adLoaderListener: AdLoaderListener?) {
+    override fun onLoad(activity: Activity?, adLoaderListener: AdLoaderListener?) {
         AppOpenAd.load(context,
             adIds.appOpenID,
             AdRequest.Builder().build(),
@@ -88,7 +88,7 @@ class AppOpenLoader @Inject constructor(
     }
 
     override fun onLoadNextAds(overrideId: String?) {
-        load(object : AdLoaderListener(overrideId) {})
+        load(null, object : AdLoaderListener(overrideId) {})
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {

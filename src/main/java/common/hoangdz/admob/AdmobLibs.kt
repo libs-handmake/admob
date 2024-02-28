@@ -59,7 +59,7 @@ class AdmobLibs {
                 MobileAds.setRequestConfiguration(configuration)
                 MobileAds.initialize(context) {
                     initialized = true
-                    admobEntryPoint.appOpenLoader().load()
+                    admobEntryPoint.appOpenLoader().load(null)
                 }
                 onRemoteFetched(it)
             }

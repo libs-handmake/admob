@@ -16,7 +16,7 @@ open class ADIdsDebug : AdIds {
     override val interRewardID: String
         get() = ""
     override val rewardID: String
-        get() = ""
+        get() = "ca-app-pub-3940256099942544/5224354917"
     override val appOpenID: String
         get() = "ca-app-pub-3940256099942544/3419835294"
 }

@@ -20,7 +20,7 @@ abstract class FullScreenAdsLoader<AD> {
     }
 
     init {
-        if (needToLoadOnInit) load()
+        if (needToLoadOnInit) load(null)
     }
 
     var availableAd: AD? = null
@@ -62,15 +62,13 @@ abstract class FullScreenAdsLoader<AD> {
     }
 
     protected abstract fun onShow(
-        activity: Activity?,
-        availableAd: AD,
-        adLoaderListener: AdLoaderListener?
+        activity: Activity?, availableAd: AD, adLoaderListener: AdLoaderListener?
     )
 
     open fun show(activity: Activity?, adLoaderListener: AdLoaderListener? = null): Boolean {
         val ad = availableAd
         if (ad == null) {
-            load(adLoaderListener)
+            load(activity, adLoaderListener)
             adLoaderListener?.onInterPassed()
             return false
         }
@@ -85,14 +83,14 @@ abstract class FullScreenAdsLoader<AD> {
         return true
     }
 
-    protected open fun onLoadNextAds(overrideId:String?) {
+    protected open fun onLoadNextAds(overrideId: String?) {
     }
 
-    fun load(adLoaderListener: AdLoaderListener? = null) {
+    fun load(activity: Activity?, adLoaderListener: AdLoaderListener? = null) {
         if (busy || !AdmobLibs.initialized) return
         busy = true
         availableAd = null
-        onLoad(adLoaderListener)
+        onLoad(activity, adLoaderListener)
     }
 
     @CallSuper
@@ -107,6 +105,6 @@ abstract class FullScreenAdsLoader<AD> {
         adLoaderListener?.onAdFailedToLoad()
     }
 
-    protected abstract fun onLoad(adLoaderListener: AdLoaderListener?)
+    protected abstract fun onLoad(activity: Activity?, adLoaderListener: AdLoaderListener?)
 
 }

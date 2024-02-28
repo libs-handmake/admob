@@ -21,4 +21,6 @@ abstract class AdLoaderListener(val overrideId: String? = null) {
     open fun onInterPassed() {}
 
     open fun onAdStartLoad() {}
+
+    open fun onAdReward(){}
 }

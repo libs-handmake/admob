@@ -48,7 +48,7 @@ class InterstitialLoader @Inject constructor(
         super.onFailedToLoad(adLoaderListener)
         if (flow.canNext) {
             flow.next()
-            load(adLoaderListener)
+            load(null, adLoaderListener)
         } else {
             flow.failed()
         }
@@ -82,7 +82,7 @@ class InterstitialLoader @Inject constructor(
         availableAd.show(activity)
     }
 
-    override fun onLoad(adLoaderListener: AdLoaderListener?) {
+    override fun onLoad(activity: Activity?, adLoaderListener: AdLoaderListener?) {
         AdState.globalInterListener?.onAdStartLoad()
         InterstitialAd.load(context,
             adLoaderListener?.overrideId ?: flow.currentId,
@@ -102,7 +102,7 @@ class InterstitialLoader @Inject constructor(
     }
 
     override fun onLoadNextAds(overrideId: String?) {
-        load(object : AdLoaderListener(overrideId) {})
+        load(null, object : AdLoaderListener(overrideId) {})
     }
 
 }
