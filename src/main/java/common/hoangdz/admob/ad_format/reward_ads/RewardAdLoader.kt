@@ -18,8 +18,15 @@ class RewardAdLoader @Inject constructor(
     @ApplicationContext private val context: Context, private val adIds: AdIds
 ) : FullScreenAdsLoader<RewardedAd>() {
 
+    var showOnLoaded = false
+
     override fun onTimeShowSaved() {
 
+    }
+
+    override fun show(activity: Activity?, adLoaderListener: AdLoaderListener?): Boolean {
+        showOnLoaded = true
+        return super.show(activity, adLoaderListener)
     }
 
     override fun onLoad(activity: Activity?, adLoaderListener: AdLoaderListener?) {
@@ -30,6 +37,7 @@ class RewardAdLoader @Inject constructor(
             object : RewardedAdLoadCallback() {
                 override fun onAdLoaded(p0: RewardedAd) {
                     onLoaded(p0)
+                    if (showOnLoaded)
                     show(activity, adLoaderListener)
                 }
 
