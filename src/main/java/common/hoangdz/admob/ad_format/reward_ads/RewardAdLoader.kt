@@ -33,12 +33,11 @@ class RewardAdLoader @Inject constructor(
         if (availableAd != null) return
         RewardedAd.load(context,
             adIds.rewardID,
-            AdRequest.Builder().build(),
+            AdRequest.Builder().setHttpTimeoutMillis(20_000).build(),
             object : RewardedAdLoadCallback() {
                 override fun onAdLoaded(p0: RewardedAd) {
                     onLoaded(p0)
-                    if (showOnLoaded)
-                    show(activity, adLoaderListener)
+                    if (showOnLoaded) show(activity, adLoaderListener)
                 }
 
                 override fun onAdFailedToLoad(p0: LoadAdError) {
