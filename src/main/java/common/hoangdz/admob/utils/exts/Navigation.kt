@@ -3,6 +3,7 @@ package common.hoangdz.admob.utils.exts
 import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import common.hoangdz.admob.config.AdState
 import common.hoangdz.lib.extensions.getActivity
 import common.hoangdz.lib.jetpack_compose.navigation.ScreenConfigs
 
@@ -13,7 +14,11 @@ fun ScreenConfigs.navigateWithAds(route: String, replacement: Boolean) {
 }
 
 fun ScreenConfigs.navigateWithAds(
-    route: String, activity: Activity?, overrideId:String? = null, replacement: Boolean = false, ignoredAds: Boolean = false
+    route: String,
+    activity: Activity?,
+    overrideId: String? = null,
+    replacement: Boolean = false,
+    ignoredAds: Boolean = false
 ) {
     fun navigate() {
         kotlin.runCatching {
@@ -26,9 +31,9 @@ fun ScreenConfigs.navigateWithAds(
         return
     }
     activity?.invokeWithInterstitial(
-        this.route.replace("\\?.*".toRegex(), ""),
-        overrideId = overrideId
+        this.route.replace("\\?.*".toRegex(), ""), overrideId = overrideId
     ) {
+        AdState.isShowInterForNavigationLastTime = it
         navigate()
     }
 }

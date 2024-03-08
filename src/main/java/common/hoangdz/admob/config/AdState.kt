@@ -18,4 +18,6 @@ object AdState {
 
     var forceInterGap: Long? = null
 
+    var isShowInterForNavigationLastTime = false
+
 }

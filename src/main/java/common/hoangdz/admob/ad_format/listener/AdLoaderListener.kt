@@ -18,7 +18,7 @@ abstract class AdLoaderListener(val overrideId: String? = null) {
 
     open fun onAdFailedToShow() {}
 
-    open fun onInterPassed() {}
+    open fun onInterPassed(showed:Boolean) {}
 
     open fun onAdStartLoad() {}
 

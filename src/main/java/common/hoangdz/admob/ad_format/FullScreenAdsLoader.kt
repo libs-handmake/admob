@@ -39,7 +39,7 @@ abstract class FullScreenAdsLoader<AD> {
             showing = false
             availableAd = null
             loaderState = DataResult.DataState.ERROR
-            adLoaderListener?.onInterPassed()
+            adLoaderListener?.onInterPassed(false)
             adLoaderListener?.onAdFailedToShow()
             onLoadNextAds(overrideId = adLoaderListener?.overrideId)
             onTimeShowSaved()
@@ -57,7 +57,7 @@ abstract class FullScreenAdsLoader<AD> {
         override fun onAdShowedFullScreenContent() {
             onTimeShowSaved()
             adLoaderListener?.onAdStartShow()
-            adLoaderListener?.onInterPassed()
+            adLoaderListener?.onInterPassed(true)
         }
     }
 
@@ -69,7 +69,7 @@ abstract class FullScreenAdsLoader<AD> {
         val ad = availableAd
         if (ad == null) {
             load(activity, adLoaderListener)
-            adLoaderListener?.onInterPassed()
+            adLoaderListener?.onInterPassed(false)
             return false
         }
         try {
@@ -78,7 +78,7 @@ abstract class FullScreenAdsLoader<AD> {
         } catch (e: Throwable) {
             showing = false
             availableAd = null
-            adLoaderListener?.onInterPassed()
+            adLoaderListener?.onInterPassed(false)
         }
         return true
     }

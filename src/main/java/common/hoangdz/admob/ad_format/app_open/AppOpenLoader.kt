@@ -80,7 +80,7 @@ class AppOpenLoader @Inject constructor(
 
     override fun show(activity: Activity?, adLoaderListener: AdLoaderListener?): Boolean {
         if (premiumHolder.isPremium || !AdmobLibs.initialized || disableToShow) {
-            adLoaderListener?.onInterPassed()
+            adLoaderListener?.onInterPassed(false)
             return true
         }
         if (!adsShared.canShowAppOpen) return false

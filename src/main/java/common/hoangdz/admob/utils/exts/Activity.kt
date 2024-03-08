@@ -21,12 +21,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 
 @Composable
-fun invokeWithInterstitial(onInterPassed: () -> Unit) {
+fun invokeWithInterstitial(onInterPassed: (Boolean) -> Unit) {
     LocalContext.current.getActivity()
-        ?.invokeWithInterstitial(LocalScreenConfigs.current.route, null, onInterPassed) ?: onInterPassed()
+        ?.invokeWithInterstitial(LocalScreenConfigs.current.route, null, onInterPassed)
+        ?: onInterPassed(false)
 }
 
-fun Activity.invokeWithInterstitial(screenName: String, overrideId:String? = null, onInterPassed: () -> Unit) {
+fun Activity.invokeWithInterstitial(
+    screenName: String, overrideId: String? = null, onInterPassed: (Boolean) -> Unit
+) {
     if (this is AppCompatActivity) {
         val interLoader = appInject<AdmobEntryPoint>().interstitialLoader()
         interLoader.show(this, object : AdLoaderListener(overrideId) {
@@ -34,7 +37,7 @@ fun Activity.invokeWithInterstitial(screenName: String, overrideId:String? = nul
                 Firebase.analytics.logEvent("inter_clicked_$screenName", bundleOf())
             }
 
-            override fun onInterPassed() {
+            override fun onInterPassed(showed: Boolean) {
                 GlobalScope.launchIO {
                     var owner: LifecycleOwner? = null
                     var tryAgain = 0
@@ -48,10 +51,10 @@ fun Activity.invokeWithInterstitial(screenName: String, overrideId:String? = nul
                     owner?.launchWhen(
                         Lifecycle.State.RESUMED
                     ) {
-                        onInterPassed()
+                        onInterPassed(showed)
                     }
                 }
             }
         })
-    } else onInterPassed()
+    } else onInterPassed(false)
 }
