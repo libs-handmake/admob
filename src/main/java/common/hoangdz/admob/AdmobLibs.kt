@@ -52,7 +52,8 @@ class AdmobLibs {
                         "812201C6E5F501E98EA1298F4A034968",
                         "D5A455C4AEA084A209D8A63ED9DE9483",
                         "AFEB93FB136E17F7319901033C81B8E5",
-                        "5E9443F94E7A3271A01B7F72618F3CFB"
+                        "5E9443F94E7A3271A01B7F72618F3CFB",
+                        "1B5E498583B753E34DAA54261F3EA4F5"// pixel 2 XL wavez
                     )
                 ).build()
                 onBiddingConsentApply?.invoke()
