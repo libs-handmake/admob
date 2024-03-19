@@ -9,6 +9,7 @@ import common.hoangdz.admob.ad_format.banner.BannerLoader
 import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdQueue
 import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdsLoader
 import common.hoangdz.lib.extensions.launchIO
+import common.hoangdz.lib.utils.user.PremiumHolder
 import common.hoangdz.lib.viewmodels.AppViewModel
 import common.hoangdz.lib.viewmodels.DataResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,8 +21,13 @@ import javax.inject.Inject
 class AdFormatViewModel @Inject constructor(
     application: Application,
     private val bannerLoader: BannerLoader,
-    private val nativeAdsLoader: NativeAdsLoader
+    private val nativeAdsLoader: NativeAdsLoader,
+    private val premiumHolder: PremiumHolder
 ) : AppViewModel(application) {
+
+    val isPremium get() = premiumHolder.premiumState
+
+    val isPremiumValue get() = premiumHolder.isPremium
 
     private val nativeAdMapper by lazy { hashMapOf<String, MutableStateFlow<DataResult<NativeAd>>>() }
 
@@ -32,7 +38,7 @@ class AdFormatViewModel @Inject constructor(
     val bannerLoaderState by lazy { _bannerLoaderState.asStateFlow() }
 
     fun loadBanner(
-        screenName: String, adView: AdView, useCollapsible :Boolean, owner: LifecycleOwner
+        screenName: String, adView: AdView, useCollapsible: Boolean, owner: LifecycleOwner
     ) {
         bannerLoader.loadBannerAd(screenName, adView, useCollapsible, owner, _bannerLoaderState)
     }
