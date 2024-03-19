@@ -61,6 +61,7 @@ class AdmobLibs {
                 MobileAds.initialize(context) {
                     initialized = true
                     admobEntryPoint.appOpenLoader().load(null)
+                    admobEntryPoint.interstitialLoader().load(null)
                 }
                 onRemoteFetched(it)
             }
