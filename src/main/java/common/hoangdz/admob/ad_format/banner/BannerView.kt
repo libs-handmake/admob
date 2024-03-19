@@ -32,51 +32,52 @@ fun BannerView(
 ) {
     val owner = LocalLifecycleOwner.current
     val loaderStateCollection by adFormatViewModel.bannerLoaderState.collectWhenResume()
+    if (loaderStateCollection.state != DataResult.DataState.ERROR) {
+        var adView by remember {
+            mutableStateOf<AdView?>(null)
+        }
 
-    var adView by remember {
-        mutableStateOf<AdView?>(null)
-    }
+        val config = LocalScreenConfigs.current
 
-    val config = LocalScreenConfigs.current
-
-    DisposableEffect(key1 = owner) {
-        val observer = LifecycleEventObserver { _, event ->
+        DisposableEffect(key1 = owner) {
+            val observer = LifecycleEventObserver { _, event ->
 //            logError("state AD $event ${config.actualRouteName}")
-            if (event == Lifecycle.Event.ON_RESUME) {
-                adView?.resume()
-            } else if (event == Lifecycle.Event.ON_PAUSE) {
-                adView?.pause()
+                if (event == Lifecycle.Event.ON_RESUME) {
+                    adView?.resume()
+                } else if (event == Lifecycle.Event.ON_PAUSE) {
+                    adView?.pause()
+                }
+            }
+            owner.lifecycle.addObserver(observer)
+            onDispose {
+                adView?.destroy()
+                owner.lifecycle.removeObserver(observer)
             }
         }
-        owner.lifecycle.addObserver(observer)
-        onDispose {
-            adView?.destroy()
-            owner.lifecycle.removeObserver(observer)
-        }
-    }
-    Box {
-        AndroidView(modifier = SafeModifier.fillMaxWidth(), factory = {
-            return@AndroidView AdView(it).also { view ->
-                adView = view
-                adFormatViewModel.loadBanner(
-                    config.route.replace("\\?.*".toRegex(), ""), view, usingCollapsible, owner
-                )
-            }
-        })
-        if (loaderStateCollection.state == DataResult.DataState.LOADING) {
-            Row {
-                Box(
-                    modifier = SafeModifier
-                        .size(50.sdp)
-                        .shimmerEffect()
-                )
-                Box(
-                    modifier = SafeModifier
-                        .weight(1f)
-                        .height(50.sdp)
-                        .padding(start = 8.sdp)
-                        .shimmerEffect()
-                )
+        Box {
+            AndroidView(modifier = SafeModifier.fillMaxWidth(), factory = {
+                return@AndroidView AdView(it).also { view ->
+                    adView = view
+                    adFormatViewModel.loadBanner(
+                        config.route.replace("\\?.*".toRegex(), ""), view, usingCollapsible, owner
+                    )
+                }
+            })
+            if (loaderStateCollection.state == DataResult.DataState.LOADING) {
+                Row {
+                    Box(
+                        modifier = SafeModifier
+                            .size(50.sdp)
+                            .shimmerEffect()
+                    )
+                    Box(
+                        modifier = SafeModifier
+                            .weight(1f)
+                            .height(50.sdp)
+                            .padding(start = 8.sdp)
+                            .shimmerEffect()
+                    )
+                }
             }
         }
     }

@@ -2,6 +2,7 @@ package common.hoangdz.admob.utils.user_message_platform
 
 import android.app.Activity
 import com.google.android.ump.ConsentDebugSettings
+import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
 import common.hoangdz.lib.extensions.logError
@@ -11,7 +12,7 @@ class UserConsentRequester {
         fun requestConsentInformation(
             activity: Activity,
             onConsentRequestDismiss: (() -> Unit)?,
-            onRequestInitAdSdk: (consentCompleted: Boolean) -> Unit
+            onRequestInitAdSdk: () -> Unit
         ) {
             val debugSetting = ConsentDebugSettings.Builder(activity)
                 .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
@@ -28,15 +29,14 @@ class UserConsentRequester {
                     activity
                 ) { loadAndShowError ->
                     logError("${loadAndShowError?.message} : ${loadAndShowError?.errorCode}")
-                    onRequestInitAdSdk(true)
+                    onRequestInitAdSdk()
                     onConsentRequestDismiss?.invoke()
                 }
             }, { requestConsentError ->
                 logError("request consent error ${requestConsentError.message} : ${requestConsentError.errorCode}")
-                onRequestInitAdSdk(true)
                 onConsentRequestDismiss?.invoke()
             })
-            onRequestInitAdSdk(false)
+            onRequestInitAdSdk()
         }
     }
 }
