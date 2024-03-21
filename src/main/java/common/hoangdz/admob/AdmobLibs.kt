@@ -20,11 +20,12 @@ class AdmobLibs {
             remoteConfigDefault: Map<String, Any>?,
             onConsentRequestDismiss: (() -> Unit)? = null,
             onBiddingConsentApply: (() -> Unit)? = null,
-            onRemoteFetched: (config: FirebaseRemoteConfig) -> Unit,
-            onInitializeCompleted:()->Unit
+            onRemoteFetched: (config: FirebaseRemoteConfig) -> Unit
         ) {
             UserConsentRequester.requestConsentInformation(activity, onConsentRequestDismiss) {
-                initialize(activity, remoteConfigDefault, onBiddingConsentApply, onRemoteFetched, it, onInitializeCompleted)
+                initialize(
+                    activity, remoteConfigDefault, onBiddingConsentApply, onRemoteFetched
+                )
             }
         }
 
@@ -32,18 +33,13 @@ class AdmobLibs {
             context: Context,
             remoteConfigDefault: Map<String, Any>?,
             onBiddingConsentApply: (() -> Unit)? = null,
-            onRemoteFetched: (config: FirebaseRemoteConfig) -> Unit,
-            consentCompleted: Boolean,
-            onInitializeCompleted:()->Unit
+            onRemoteFetched: (config: FirebaseRemoteConfig) -> Unit
         ) {
             val admobEntryPoint = context.appInject<AdmobEntryPoint>()
             admobEntryPoint.adRemoteConfig().fetchRemoteConfig(remoteConfigDefault ?: mapOf()) {
                 val consentInformation = UserMessagingPlatform.getConsentInformation(context)
                 if (!consentInformation.canRequestAds()) {
                     onRemoteFetched(it)
-                    if (consentCompleted){
-                        onInitializeCompleted.invoke()
-                    }
                     return@fetchRemoteConfig
                 }
                 if (needToCallInitialize) {
@@ -65,8 +61,6 @@ class AdmobLibs {
                 MobileAds.initialize(context) {
                     initialized = true
                     admobEntryPoint.appOpenLoader().load(null)
-                    admobEntryPoint.interstitialLoader().load(null)
-                    onInitializeCompleted.invoke()
                 }
                 onRemoteFetched(it)
             }
