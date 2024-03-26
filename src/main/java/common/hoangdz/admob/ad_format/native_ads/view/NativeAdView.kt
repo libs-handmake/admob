@@ -14,6 +14,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.gms.ads.nativead.NativeAd
 import common.hoangdz.admob.ad_format.AdFormatViewModel
+import common.hoangdz.lib.extensions.logError
 import common.hoangdz.lib.jetpack_compose.exts.SafeModifier
 import common.hoangdz.lib.jetpack_compose.exts.collectWhenResume
 import common.hoangdz.lib.viewmodels.DataResult
@@ -35,7 +36,10 @@ fun NativeAdView(
     val adStateCollector by adState.collectWhenResume()
     val owner = LocalLifecycleOwner.current
     val premiumState by adViewModel.isPremium.collectWhenResume()
-    if (adStateCollector.state == DataResult.DataState.ERROR || premiumState) return
+    if (adStateCollector.state == DataResult.DataState.ERROR || premiumState) {
+        logError("Native error ${adStateCollector.state}")
+        return
+    }
     Box(SafeModifier.fillMaxWidth()) {
         Box(modifier = modifier) {
             if (adStateCollector.state == DataResult.DataState.LOADED) AndroidView(modifier = SafeModifier.fillMaxWidth(),

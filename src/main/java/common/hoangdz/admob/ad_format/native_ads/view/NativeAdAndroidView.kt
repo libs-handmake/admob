@@ -2,8 +2,6 @@ package common.hoangdz.admob.ad_format.native_ads.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -38,10 +36,6 @@ class NativeAdAndroidView : FrameLayout {
     private var adLabelView: TextView? = null
 
     private var res: Int? = null
-
-    init {
-        layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-    }
 
     fun setContentView(@LayoutRes layoutRes: Int) {
         res = layoutRes
