@@ -13,6 +13,7 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import common.hoangdz.admob.R
 import common.hoangdz.lib.extensions.gone
 import common.hoangdz.lib.extensions.layoutInflater
+import common.hoangdz.lib.extensions.logError
 import common.hoangdz.lib.extensions.visible
 
 class NativeAdAndroidView : FrameLayout {
@@ -53,8 +54,12 @@ class NativeAdAndroidView : FrameLayout {
 
     fun bindAds(nativeAd: NativeAd?) {
         this.nativeAd = nativeAd
+        if (res == null) {
+            logError("Not found template layout id ")
+        }
         prepare()
         nativeAd ?: kotlin.run {
+            logError("Native ad not available")
             gone()
             return
         }
@@ -98,7 +103,9 @@ class NativeAdAndroidView : FrameLayout {
 
     private fun prepare() {
         removeAllViews()
-        context.layoutInflater.inflate(res ?: return, this, true)
+        val view = context.layoutInflater.inflate(res ?: return, this, false)
+        view.visible()
+        addView(view)
         bindView()
     }
 }
