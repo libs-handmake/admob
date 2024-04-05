@@ -53,17 +53,20 @@ class NativeAdAndroidView : FrameLayout {
     }
 
     fun bindAds(nativeAd: NativeAd?) {
-        this.nativeAd = nativeAd
-        if (res == null) {
-            logError("Not found template layout id ")
+        synchronized(this) {
+            if (nativeAd != null && this.nativeAd == nativeAd) return
+            this.nativeAd = nativeAd
+            if (res == null) {
+                logError("Not found template layout id ")
+            }
+            prepare()
+            nativeAd ?: kotlin.run {
+                logError("Native ad not available")
+                gone()
+                return
+            }
+            startBindAds(nativeAd)
         }
-        prepare()
-        nativeAd ?: kotlin.run {
-            logError("Native ad not available")
-            gone()
-            return
-        }
-        startBindAds(nativeAd)
     }
 
     private fun startBindAds(nativeAd: NativeAd?) {

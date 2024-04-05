@@ -32,7 +32,9 @@ fun NativeAdView(
     var callLoaded by remember {
         mutableStateOf(false)
     }
-    val adState = adViewModel.loadNativeAds(requestID)
+    val adState = remember(key1 = requestID) {
+        adViewModel.loadNativeAds(requestID)
+    }
     val adStateCollector by adState.collectWhenResume()
     val owner = LocalLifecycleOwner.current
     val premiumState by adViewModel.isPremium.collectWhenResume()
@@ -44,9 +46,11 @@ fun NativeAdView(
         Box(modifier = modifier) {
             if (adStateCollector.state == DataResult.DataState.LOADED) AndroidView(modifier = SafeModifier.fillMaxWidth(),
                 factory = {
+                    logError("factory $requestID")
                     androidView(it, adState, owner)
                 },
                 update = {
+                    logError("bind $requestID")
                     it.bindAds(adStateCollector.value)
                     if (callLoaded) return@AndroidView
                     callLoaded = true
