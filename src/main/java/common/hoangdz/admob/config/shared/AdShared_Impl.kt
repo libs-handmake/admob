@@ -1,6 +1,7 @@
 package common.hoangdz.admob.config.shared
 
 import android.content.Context
+import common.hoangdz.admob.BuildConfig
 import common.hoangdz.admob.ad_format.FullScreenAdsLoader
 import common.hoangdz.admob.config.AdState
 import common.hoangdz.admob.config.shared.AdSharedSetting.APP_OPEN_GAP
@@ -47,7 +48,8 @@ class AdShared_Impl(context: Context) : PreferenceHelper(context), AdShared {
             putBoolean(USE_WATER_FLOW.first, value)
         }
     override var interstitialGap: Long
-        get() = AdState.forceInterGap ?: pref.getLong(INTER_GAP.first, INTER_GAP.second)
+        get() = if (BuildConfig.DEBUG) 0L else AdState.forceInterGap
+            ?: pref.getLong(INTER_GAP.first, INTER_GAP.second)
         set(value) {
             putLong(INTER_GAP.first, value)
         }

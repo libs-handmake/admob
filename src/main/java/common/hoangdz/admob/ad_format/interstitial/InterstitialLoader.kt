@@ -61,10 +61,12 @@ class InterstitialLoader @Inject constructor(
     override fun show(activity: Activity?, adLoaderListener: AdLoaderListener?): Boolean {
         if (premiumHolder.isPremium || !AdmobLibs.initialized) {
             adLoaderListener?.onInterPassed(false)
+            AdState.globalInterListener?.onInterPassed(false)
             return true
         }
         if (!adShared.canShowInterstitial || !flow.validToRequestAds) {
             adLoaderListener?.onInterPassed(false)
+            AdState.globalInterListener?.onInterPassed(false)
             return false
         }
         MobileAds.setAppMuted(true)
@@ -76,6 +78,7 @@ class InterstitialLoader @Inject constructor(
     ) {
         if (activity == null) {
             adLoaderListener?.onInterPassed(false)
+            AdState.globalInterListener?.onInterPassed(false)
             return
         }
         availableAd.fullScreenContentCallback = getFullScreenContentCallback(adLoaderListener)

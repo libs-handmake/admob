@@ -5,7 +5,9 @@ import androidx.annotation.CallSuper
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.FullScreenContentCallback
 import common.hoangdz.admob.AdmobLibs
+import common.hoangdz.admob.ad_format.interstitial.InterstitialLoader
 import common.hoangdz.admob.ad_format.listener.AdLoaderListener
+import common.hoangdz.admob.config.AdState
 import common.hoangdz.lib.viewmodels.DataResult
 
 abstract class FullScreenAdsLoader<AD> {
@@ -40,6 +42,9 @@ abstract class FullScreenAdsLoader<AD> {
             availableAd = null
             loaderState = DataResult.DataState.ERROR
             adLoaderListener?.onInterPassed(false)
+            if (this@FullScreenAdsLoader is InterstitialLoader) {
+                AdState.globalInterListener?.onInterPassed(false)
+            }
             adLoaderListener?.onAdFailedToShow()
             onLoadNextAds(overrideId = adLoaderListener?.overrideId)
             onTimeShowSaved()
@@ -58,6 +63,9 @@ abstract class FullScreenAdsLoader<AD> {
             onTimeShowSaved()
             adLoaderListener?.onAdStartShow()
             adLoaderListener?.onInterPassed(true)
+            if (this@FullScreenAdsLoader is InterstitialLoader) {
+                AdState.globalInterListener?.onInterPassed(true)
+            }
         }
     }
 
