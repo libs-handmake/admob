@@ -48,7 +48,7 @@ class AdShared_Impl(context: Context) : PreferenceHelper(context), AdShared {
             putBoolean(USE_WATER_FLOW.first, value)
         }
     override var interstitialGap: Long
-        get() = if (BuildConfig.DEBUG) 0L else AdState.forceInterGap
+        get() = /*if (BuildConfig.DEBUG) 0L else*/ AdState.forceInterGap
             ?: pref.getLong(INTER_GAP.first, INTER_GAP.second)
         set(value) {
             putLong(INTER_GAP.first, value)
