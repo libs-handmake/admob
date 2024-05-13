@@ -3,6 +3,7 @@ package common.hoangdz.admob.ad_format
 import android.app.Application
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.nativead.NativeAd
 import common.hoangdz.admob.ad_format.banner.BannerLoader
@@ -38,9 +39,13 @@ class AdFormatViewModel @Inject constructor(
     val bannerLoaderState by lazy { _bannerLoaderState.asStateFlow() }
 
     fun loadBanner(
-        screenName: String, adView: AdView, useCollapsible: Boolean, owner: LifecycleOwner
+        screenName: String,
+        adView: AdView,
+        useCollapsible: Boolean,
+        owner: LifecycleOwner,
+        adListener: AdListener? = null
     ) {
-        bannerLoader.loadBannerAd(screenName, adView, useCollapsible, owner, _bannerLoaderState)
+        bannerLoader.loadBannerAd(screenName, adView, useCollapsible, owner, _bannerLoaderState, adListener)
     }
 
     fun loadNativeAds(requestId: String): MutableStateFlow<DataResult<NativeAd>> {

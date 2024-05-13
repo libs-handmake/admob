@@ -18,7 +18,6 @@ import common.hoangdz.lib.utils.user.PremiumHolder
 import common.hoangdz.lib.viewmodels.DataResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -33,16 +32,18 @@ class BannerLoader @Inject constructor(
         adView: AdView,
         useCollapsible: Boolean,
         owner: LifecycleOwner,
-        adLoaderState: MutableStateFlow<DataResult<AdView>>
+        adLoaderState: MutableStateFlow<DataResult<AdView>>,
+        adListener: AdListener? = null
     ) {
-        loadAD(screenName, adView, useCollapsible, adLoaderState)
+        loadAD(screenName, adView, useCollapsible, adLoaderState, adListener)
     }
 
     private fun loadAD(
         screenName: String,
         adView: AdView,
         useCollapsible: Boolean,
-        adLoaderState: MutableStateFlow<DataResult<AdView>>
+        adLoaderState: MutableStateFlow<DataResult<AdView>>,
+        adListener: AdListener? = null
     ) {
         if (!adView.adUnitId.isNullOrEmpty() || adView.isLoading) return
         if (premiumHolder.isPremium) {
@@ -61,10 +62,12 @@ class BannerLoader @Inject constructor(
                 Firebase.analytics.logEvent(
                     "banner_impression_$screenName", bundleOf()
                 )
+                adListener?.onAdImpression()
             }
 
             override fun onAdClicked() {
                 Firebase.analytics.logEvent("banner_ad_clicked_$screenName", bundleOf())
+                adListener?.onAdClicked()
             }
 
             override fun onAdLoaded() {
@@ -73,16 +76,17 @@ class BannerLoader @Inject constructor(
                     if (premiumHolder.isPremium) DataResult(DataResult.DataState.ERROR) else DataResult(
                         DataResult.DataState.LOADED, adView
                     )
+                adListener?.onAdLoaded()
             }
 
             override fun onAdFailedToLoad(p0: LoadAdError) {
                 super.onAdFailedToLoad(p0)
                 adLoaderState.value = DataResult(DataResult.DataState.ERROR)
+                adListener?.onAdFailedToLoad(p0)
             }
         }
         val extras = bundleOf(
-            "collapsible" to "bottom",
-            "collapsible_request_id" to UUID.randomUUID().toString()
+            "collapsible" to "bottom"
         ).takeIf { useCollapsible }
         val request = AdRequest.Builder().let {
             extras?.let { e -> it.addNetworkExtrasBundle(AdMobAdapter::class.java, e) } ?: it
