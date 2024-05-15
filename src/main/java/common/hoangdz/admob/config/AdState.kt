@@ -17,7 +17,4 @@ object AdState {
     var globalInterListener: AdLoaderListener? = null
 
     var forceInterGap: Long? = null
-
-    var isShowInterForNavigationLastTime = false
-
 }

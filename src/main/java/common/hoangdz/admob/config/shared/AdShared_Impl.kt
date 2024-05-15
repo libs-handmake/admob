@@ -2,7 +2,6 @@ package common.hoangdz.admob.config.shared
 
 import android.content.Context
 import common.hoangdz.admob.BuildConfig
-import common.hoangdz.admob.ad_format.FullScreenAdsLoader
 import common.hoangdz.admob.config.AdState
 import common.hoangdz.admob.config.shared.AdSharedSetting.APP_OPEN_GAP
 import common.hoangdz.admob.config.shared.AdSharedSetting.FULL_SCREEN_GAP
@@ -13,6 +12,7 @@ import common.hoangdz.admob.config.shared.AdSharedSetting.MAX_NATIVE_AD_THRESHOL
 import common.hoangdz.admob.config.shared.AdSharedSetting.MIN_GAP_WATER_FLOOR
 import common.hoangdz.admob.config.shared.AdSharedSetting.USE_WATER_FLOW
 import common.hoangdz.lib.utils.PreferenceHelper
+import common.hoangdz.lib.utils.ads.GlobalAdState
 
 @Suppress("ClassName")
 class AdShared_Impl(context: Context) : PreferenceHelper(context), AdShared {
@@ -48,7 +48,7 @@ class AdShared_Impl(context: Context) : PreferenceHelper(context), AdShared {
             putBoolean(USE_WATER_FLOW.first, value)
         }
     override var interstitialGap: Long
-        get() = /*if (BuildConfig.DEBUG) 0L else*/ AdState.forceInterGap
+        get() = if (BuildConfig.DEBUG) 0L else AdState.forceInterGap
             ?: pref.getLong(INTER_GAP.first, INTER_GAP.second)
         set(value) {
             putLong(INTER_GAP.first, value)
@@ -65,7 +65,7 @@ class AdShared_Impl(context: Context) : PreferenceHelper(context), AdShared {
         }
 
     private val canShowFullScreenAds
-        get() = !FullScreenAdsLoader.showing
+        get() = !GlobalAdState.showingFullScreenADS
 
     override val canShowInterstitial: Boolean
         get() {

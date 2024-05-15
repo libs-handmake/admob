@@ -8,6 +8,7 @@ import common.hoangdz.admob.AdmobLibs
 import common.hoangdz.admob.ad_format.interstitial.InterstitialLoader
 import common.hoangdz.admob.ad_format.listener.AdLoaderListener
 import common.hoangdz.admob.config.AdState
+import common.hoangdz.lib.utils.ads.GlobalAdState
 import common.hoangdz.lib.viewmodels.DataResult
 
 abstract class FullScreenAdsLoader<AD> {
@@ -16,10 +17,6 @@ abstract class FullScreenAdsLoader<AD> {
     private var busy = false
 
     protected var loaderState = DataResult.DataState.IDLE
-
-    companion object {
-        var showing = false
-    }
 
     init {
         if (needToLoadOnInit) load(null)
@@ -38,7 +35,7 @@ abstract class FullScreenAdsLoader<AD> {
         }
 
         override fun onAdFailedToShowFullScreenContent(p0: AdError) {
-            showing = false
+            GlobalAdState.showingFullScreenADS = false
             availableAd = null
             loaderState = DataResult.DataState.ERROR
             adLoaderListener?.onInterPassed(false)
@@ -51,7 +48,7 @@ abstract class FullScreenAdsLoader<AD> {
         }
 
         override fun onAdDismissedFullScreenContent() {
-            showing = false
+            GlobalAdState.showingFullScreenADS = false
             loaderState = DataResult.DataState.IDLE
             adLoaderListener?.onAdClosed()
             availableAd = null
@@ -81,10 +78,10 @@ abstract class FullScreenAdsLoader<AD> {
             return false
         }
         try {
-            showing = true
+            GlobalAdState.showingFullScreenADS = true
             onShow(activity, ad, adLoaderListener)
         } catch (e: Throwable) {
-            showing = false
+            GlobalAdState.showingFullScreenADS = false
             availableAd = null
             adLoaderListener?.onInterPassed(false)
         }
