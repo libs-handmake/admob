@@ -1,58 +1,84 @@
 package common.hoangdz.admob.ad_format.banner
 
-import android.content.Context
-import android.util.AttributeSet
-import android.widget.FrameLayout
-import androidx.lifecycle.LifecycleOwner
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.LoadAdError
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import common.hoangdz.admob.ad_format.AdFormatViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import common.hoangdz.lib.jetpack_compose.exts.SafeModifier
+import common.hoangdz.lib.jetpack_compose.exts.collectWhenResume
+import common.hoangdz.lib.jetpack_compose.exts.shimmerEffect
+import common.hoangdz.lib.jetpack_compose.navigation.LocalScreenConfigs
+import common.hoangdz.lib.viewmodels.DataResult
+import ir.kaaveh.sdpcompose.sdp
 
-class BannerSwappingView : FrameLayout {
-
-    constructor(context: Context) : super(context)
-
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-
-    private var scope: CoroutineScope? = null
-
-    private var banner: AdView? = null
-        set(value) {
-            if (value == field) return
-            field?.destroy()
-            removeView(field)
-            field = value
+@Composable
+fun BannerSwappingView(
+    adFormatViewModel: AdFormatViewModel = hiltViewModel()
+) {
+    val owner = LocalLifecycleOwner.current
+    val loaderStateCollection by adFormatViewModel.bannerLoaderState.collectWhenResume()
+    if (loaderStateCollection.state != DataResult.DataState.ERROR) {
+        var adView by remember {
+            mutableStateOf<BannerSwappingViewNative?>(null)
         }
 
-    fun hasBanner() = banner != null
+        val config = LocalScreenConfigs.current
 
-
-    fun generateBanner(adFormatViewModel: AdFormatViewModel, adID: String, owner: LifecycleOwner) {
-        addView(AdView(context).apply {
-            adFormatViewModel.loadBanner(adID, this, true, owner, object : AdListener() {
-                override fun onAdLoaded() {
-                    banner = this@apply
+        DisposableEffect(key1 = owner) {
+            val observer = LifecycleEventObserver { _, event ->
+//            logError("state AD $event ${config.actualRouteName}")
+                if (event == Lifecycle.Event.ON_RESUME) {
+                    adView?.resume()
+                } else if (event == Lifecycle.Event.ON_PAUSE) {
+                    adView?.pause()
                 }
-
-                override fun onAdFailedToLoad(p0: LoadAdError) {
-
+            }
+            owner.lifecycle.addObserver(observer)
+            onDispose {
+                adView?.destroy()
+                owner.lifecycle.removeObserver(observer)
+            }
+        }
+        Box {
+            AndroidView(modifier = SafeModifier.fillMaxWidth(), factory = {
+                return@AndroidView BannerSwappingViewNative(it).also { view ->
+                    adView = view
+                    view.generateBanner(
+                        adFormatViewModel, config.route.replace("\\?.*".toRegex(), ""), owner
+                    )
                 }
+            }, update = {
             })
-        })
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        scope = CoroutineScope(Dispatchers.IO)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        banner = null
-        scope?.cancel()
+            if (loaderStateCollection.state == DataResult.DataState.LOADING) {
+                Row {
+                    Box(
+                        modifier = SafeModifier
+                            .size(50.sdp)
+                            .shimmerEffect()
+                    )
+                    Box(
+                        modifier = SafeModifier
+                            .weight(1f)
+                            .height(50.sdp)
+                            .padding(start = 8.sdp)
+                            .shimmerEffect()
+                    )
+                }
+            }
+        }
     }
 }

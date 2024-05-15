@@ -10,6 +10,7 @@ import common.hoangdz.admob.ad_format.banner.BannerLoader
 import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdQueue
 import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdsLoader
 import common.hoangdz.lib.extensions.launchIO
+import common.hoangdz.lib.jetpack_compose.exts.compareAndSet
 import common.hoangdz.lib.utils.user.PremiumHolder
 import common.hoangdz.lib.viewmodels.AppViewModel
 import common.hoangdz.lib.viewmodels.DataResult
@@ -38,6 +39,13 @@ class AdFormatViewModel @Inject constructor(
 
     val bannerLoaderState by lazy { _bannerLoaderState.asStateFlow() }
 
+    private val _bannerReloadRequester by lazy { MutableStateFlow(0) }
+    val bannerReloadRequester by lazy { _bannerReloadRequester.asStateFlow() }
+
+    fun requestReloadBanner() {
+        _bannerReloadRequester.compareAndSet(1 - _bannerReloadRequester.value)
+    }
+
     fun loadBanner(
         screenName: String,
         adView: AdView,
@@ -45,7 +53,9 @@ class AdFormatViewModel @Inject constructor(
         owner: LifecycleOwner,
         adListener: AdListener? = null
     ) {
-        bannerLoader.loadBannerAd(screenName, adView, useCollapsible, owner, _bannerLoaderState, adListener)
+        bannerLoader.loadBannerAd(
+            screenName, adView, useCollapsible, owner, _bannerLoaderState, adListener
+        )
     }
 
     fun loadNativeAds(requestId: String): MutableStateFlow<DataResult<NativeAd>> {
