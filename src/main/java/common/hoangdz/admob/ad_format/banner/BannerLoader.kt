@@ -13,6 +13,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import common.hoangdz.admob.config.AdState
 import common.hoangdz.admob.config.ad_id.AdIds
+import common.hoangdz.lib.extensions.logError
 import common.hoangdz.lib.extensions.screenSize
 import common.hoangdz.lib.utils.user.PremiumHolder
 import common.hoangdz.lib.viewmodels.DataResult
@@ -45,6 +46,7 @@ class BannerLoader @Inject constructor(
         adLoaderState: MutableStateFlow<DataResult<AdView>>,
         adListener: AdListener? = null
     ) {
+        logError("Load banner useCollapsible $useCollapsible")
         if (!adView.adUnitId.isNullOrEmpty() || adView.isLoading) return
         if (premiumHolder.isPremium) {
             adLoaderState.value = DataResult(DataResult.DataState.ERROR)

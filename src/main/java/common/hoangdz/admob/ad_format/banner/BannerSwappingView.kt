@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import common.hoangdz.admob.ad_format.AdFormatViewModel
+import common.hoangdz.admob.ad_format.banner.state_holder.BannerViewModel
 import common.hoangdz.lib.jetpack_compose.exts.SafeModifier
 import common.hoangdz.lib.jetpack_compose.exts.collectWhenResume
 import common.hoangdz.lib.jetpack_compose.exts.shimmerEffect
@@ -27,17 +29,22 @@ import ir.kaaveh.sdpcompose.sdp
 
 @Composable
 fun BannerSwappingView(
-    adFormatViewModel: AdFormatViewModel = hiltViewModel()
+    adFormatViewModel: AdFormatViewModel = hiltViewModel(),
+    bannerViewModel: BannerViewModel = hiltViewModel()
 ) {
     val owner = LocalLifecycleOwner.current
     val loaderStateCollection by adFormatViewModel.bannerLoaderState.collectWhenResume()
+    val bannerRefreshNotifier by bannerViewModel.refreshBannerNotifier.collectWhenResume()
     if (loaderStateCollection.state != DataResult.DataState.ERROR) {
         var adView by remember {
             mutableStateOf<BannerSwappingViewNative?>(null)
         }
-
         val config = LocalScreenConfigs.current
-
+        LaunchedEffect(key1 = bannerRefreshNotifier) {
+            if (adView?.hasBanner() == true) adView?.generateBanner(
+                adFormatViewModel, config.actualRouteName, owner
+            )
+        }
         DisposableEffect(key1 = owner) {
             val observer = LifecycleEventObserver { _, event ->
 //            logError("state AD $event ${config.actualRouteName}")
@@ -61,9 +68,8 @@ fun BannerSwappingView(
                         adFormatViewModel, config.route.replace("\\?.*".toRegex(), ""), owner
                     )
                 }
-            }, update = {
-            })
-            if (loaderStateCollection.state == DataResult.DataState.LOADING) {
+            }, update = {})
+            if (loaderStateCollection.state == DataResult.DataState.LOADING && adView?.hasBanner() != true) {
                 Row {
                     Box(
                         modifier = SafeModifier

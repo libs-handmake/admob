@@ -8,6 +8,8 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import common.hoangdz.admob.ad_format.AdFormatViewModel
+import common.hoangdz.lib.extensions.logError
+import common.hoangdz.lib.utils.ads.GlobalAdState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -19,6 +21,12 @@ class BannerSwappingViewNative : FrameLayout {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     private var scope: CoroutineScope? = null
+
+    private var lastTimeGenerateBanner = 0L
+
+    companion object {
+        const val BANNER_GENERATE_INTERVAL = 6000
+    }
 
     private var banner: AdView? = null
         set(value) {
@@ -32,16 +40,23 @@ class BannerSwappingViewNative : FrameLayout {
 
 
     fun generateBanner(adFormatViewModel: AdFormatViewModel, adID: String, owner: LifecycleOwner) {
+        logError("Generate Banner")
+        if (System.currentTimeMillis() - lastTimeGenerateBanner < BANNER_GENERATE_INTERVAL) return
+        lastTimeGenerateBanner = System.currentTimeMillis()
         addView(AdView(context).apply {
-            adFormatViewModel.loadBanner(adID, this, true, owner, object : AdListener() {
-                override fun onAdLoaded() {
-                    banner = this@apply
-                }
+            adFormatViewModel.loadBanner(adID,
+                this,
+                useCollapsible = !GlobalAdState.isShowInterForNavigationLastTime,
+                owner,
+                object : AdListener() {
+                    override fun onAdLoaded() {
+                        banner = this@apply
+                    }
 
-                override fun onAdFailedToLoad(p0: LoadAdError) {
+                    override fun onAdFailedToLoad(p0: LoadAdError) {
 
-                }
-            })
+                    }
+                })
         })
     }
 
