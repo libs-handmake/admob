@@ -53,6 +53,7 @@ class AdmobLibs {
                         "D5A455C4AEA084A209D8A63ED9DE9483",
                         "AFEB93FB136E17F7319901033C81B8E5",
                         "5E9443F94E7A3271A01B7F72618F3CFB",
+                        "8F156B99DFB1020FE53F27B325B91DF8",//Wavez Samsung android 14
                         "1B5E498583B753E34DAA54261F3EA4F5"// pixel 2 XL wavez
                     )
                 ).build()
