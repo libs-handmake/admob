@@ -90,6 +90,7 @@ class BannerLoader @Inject constructor(
         val extras = bundleOf(
             "collapsible" to "bottom"
         ).takeIf { useCollapsible }
+        logError("use Collapsible $useCollapsible")
         val request = AdRequest.Builder().let {
             extras?.let { e -> it.addNetworkExtrasBundle(AdMobAdapter::class.java, e) } ?: it
         }.build()

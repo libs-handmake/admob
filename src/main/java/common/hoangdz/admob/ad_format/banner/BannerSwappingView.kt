@@ -65,7 +65,10 @@ fun BannerSwappingView(
                 return@AndroidView BannerSwappingViewNative(it).also { view ->
                     adView = view
                     view.generateBanner(
-                        adFormatViewModel, config.route.replace("\\?.*".toRegex(), ""), owner
+                        adFormatViewModel,
+                        config.route.replace("\\?.*".toRegex(), ""),
+                        owner,
+                        bannerViewModel.useCollapsible
                     )
                 }
             }, update = {})

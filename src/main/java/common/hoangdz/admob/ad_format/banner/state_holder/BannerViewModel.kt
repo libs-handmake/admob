@@ -8,4 +8,6 @@ import javax.inject.Inject
 @HiltViewModel
 class BannerViewModel @Inject constructor(application: Application, private val bannerStateHolder: BannerStateHolder) : AppViewModel(application) {
     val refreshBannerNotifier get() = bannerStateHolder.refreshBannerNotifier
+
+    val useCollapsible get() = bannerStateHolder.useCollapsible
 }

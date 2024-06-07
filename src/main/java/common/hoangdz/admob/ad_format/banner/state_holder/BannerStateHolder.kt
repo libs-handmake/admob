@@ -11,7 +11,10 @@ class BannerStateHolder @Inject constructor() {
     private val _refreshBannerNotifier by lazy { MutableStateFlow(0) }
     val refreshBannerNotifier by lazy { _refreshBannerNotifier.asStateFlow() }
 
-    fun refreshBanner(){
+    var useCollapsible = true
+
+    fun refreshBanner(useCollapsible: Boolean = true) {
+        this.useCollapsible = useCollapsible
         _refreshBannerNotifier.compareAndSet(1 - _refreshBannerNotifier.value)
     }
 }

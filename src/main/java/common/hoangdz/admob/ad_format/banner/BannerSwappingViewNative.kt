@@ -39,14 +39,20 @@ class BannerSwappingViewNative : FrameLayout {
     fun hasBanner() = banner != null
 
 
-    fun generateBanner(adFormatViewModel: AdFormatViewModel, adID: String, owner: LifecycleOwner) {
+    fun generateBanner(
+        adFormatViewModel: AdFormatViewModel,
+        adID: String,
+        owner: LifecycleOwner,
+        useCollapsible: Boolean? = null
+    ) {
         logError("Generate Banner")
-        if (System.currentTimeMillis() - lastTimeGenerateBanner < BANNER_GENERATE_INTERVAL) return
+        if (System.currentTimeMillis() - lastTimeGenerateBanner < BANNER_GENERATE_INTERVAL && useCollapsible != false) return
         lastTimeGenerateBanner = System.currentTimeMillis()
         addView(AdView(context).apply {
-            adFormatViewModel.loadBanner(adID,
+            adFormatViewModel.loadBanner(
+                adID,
                 this,
-                useCollapsible = !GlobalAdState.isShowInterForNavigationLastTime,
+                useCollapsible = useCollapsible ?: !GlobalAdState.isShowInterForNavigationLastTime,
                 owner,
                 object : AdListener() {
                     override fun onAdLoaded() {
