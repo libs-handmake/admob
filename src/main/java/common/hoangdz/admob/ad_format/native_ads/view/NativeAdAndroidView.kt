@@ -10,7 +10,7 @@ import androidx.annotation.LayoutRes
 import com.google.android.gms.ads.nativead.MediaView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
-import common.hoangdz.admob.R
+import common.hoangdz.lib.R
 import common.hoangdz.lib.extensions.gone
 import common.hoangdz.lib.extensions.layoutInflater
 import common.hoangdz.lib.extensions.logError

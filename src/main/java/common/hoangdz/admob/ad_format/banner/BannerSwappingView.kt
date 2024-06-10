@@ -42,7 +42,7 @@ fun BannerSwappingView(
         val config = LocalScreenConfigs.current
         LaunchedEffect(key1 = bannerRefreshNotifier) {
             if (adView?.hasBanner() == true) adView?.generateBanner(
-                adFormatViewModel, config.actualRouteName, owner
+                adFormatViewModel, config.actualRouteName, owner, bannerViewModel.useCollapsible
             )
         }
         DisposableEffect(key1 = owner) {

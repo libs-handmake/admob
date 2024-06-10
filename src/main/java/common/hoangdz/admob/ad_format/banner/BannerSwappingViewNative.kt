@@ -47,10 +47,10 @@ class BannerSwappingViewNative : FrameLayout {
     ) {
         logError("Generate Banner")
         if (System.currentTimeMillis() - lastTimeGenerateBanner < BANNER_GENERATE_INTERVAL && useCollapsible != false) return
+        logError("Generate Banner $useCollapsible")
         lastTimeGenerateBanner = System.currentTimeMillis()
         addView(AdView(context).apply {
-            adFormatViewModel.loadBanner(
-                adID,
+            adFormatViewModel.loadBanner(adID,
                 this,
                 useCollapsible = useCollapsible ?: !GlobalAdState.isShowInterForNavigationLastTime,
                 owner,
