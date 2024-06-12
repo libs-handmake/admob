@@ -4,9 +4,6 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
@@ -23,26 +20,17 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AppOpenLoader @Inject constructor(
+class AppOpenLoaderManually @Inject constructor(
     @ApplicationContext private val context: Context,
     private val adIds: AdIds,
     private val adsShared: AdShared,
     private val premiumHolder: PremiumHolder
-) : FullScreenAdsLoader<AppOpenAd>(), Application.ActivityLifecycleCallbacks,
-    LifecycleEventObserver {
+) : FullScreenAdsLoader<AppOpenAd>(), Application.ActivityLifecycleCallbacks {
 
     private var currentActivity: Activity? = null
 
     companion object {
         var disableToShow = false
-    }
-
-    init {
-        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
-    }
-
-    fun unregister(app: Application) {
-        app.unregisterActivityLifecycleCallbacks(this)
     }
 
     fun register(app: Application) {
@@ -118,10 +106,8 @@ class AppOpenLoader @Inject constructor(
     override fun onActivityDestroyed(activity: Activity) {
     }
 
-    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        if (event == Lifecycle.Event.ON_RESUME) {
-            show(currentActivity)
-            disableToShow = false
-        }
+    fun show() {
+        show(currentActivity)
+        disableToShow = false
     }
 }

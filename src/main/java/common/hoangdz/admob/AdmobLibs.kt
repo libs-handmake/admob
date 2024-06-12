@@ -18,13 +18,18 @@ class AdmobLibs {
         fun initializeWithConsent(
             activity: Activity,
             remoteConfigDefault: Map<String, Any>?,
+            initAppOpen: Boolean = true,
             onConsentRequestDismiss: (() -> Unit)? = null,
             onBiddingConsentApply: (() -> Unit)? = null,
             onRemoteFetched: (config: FirebaseRemoteConfig) -> Unit
         ) {
             UserConsentRequester.requestConsentInformation(activity, onConsentRequestDismiss) {
                 initialize(
-                    activity, remoteConfigDefault, onBiddingConsentApply, onRemoteFetched
+                    activity,
+                    remoteConfigDefault,
+                    onBiddingConsentApply,
+                    initAppOpen,
+                    onRemoteFetched
                 )
             }
         }
@@ -33,6 +38,7 @@ class AdmobLibs {
             context: Context,
             remoteConfigDefault: Map<String, Any>?,
             onBiddingConsentApply: (() -> Unit)? = null,
+            initAppOpen: Boolean = true,
             onRemoteFetched: (config: FirebaseRemoteConfig) -> Unit
         ) {
             val admobEntryPoint = context.appInject<AdmobEntryPoint>()
@@ -61,7 +67,7 @@ class AdmobLibs {
                 MobileAds.setRequestConfiguration(configuration)
                 MobileAds.initialize(context) {
                     initialized = true
-                    admobEntryPoint.appOpenLoader().load(null)
+                    if (initAppOpen) admobEntryPoint.appOpenLoader().load(null)
                 }
                 onRemoteFetched(it)
             }

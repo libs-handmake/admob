@@ -57,6 +57,7 @@ abstract class FullScreenAdsLoader<AD> {
         }
 
         override fun onAdShowedFullScreenContent() {
+            GlobalAdState.showingFullScreenADS = true
             onTimeShowSaved()
             adLoaderListener?.onAdStartShow()
             adLoaderListener?.onInterPassed(true)
@@ -78,10 +79,8 @@ abstract class FullScreenAdsLoader<AD> {
             return false
         }
         try {
-            GlobalAdState.showingFullScreenADS = true
             onShow(activity, ad, adLoaderListener)
         } catch (e: Throwable) {
-            GlobalAdState.showingFullScreenADS = false
             availableAd = null
             adLoaderListener?.onInterPassed(false)
         }
