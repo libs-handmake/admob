@@ -37,16 +37,14 @@ class AppOpenLoader @Inject constructor(
         var disableToShow = false
     }
 
-    init {
-        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
-    }
-
     fun unregister(app: Application) {
         app.unregisterActivityLifecycleCallbacks(this)
     }
 
     fun register(app: Application) {
+        unregister(app)
         app.registerActivityLifecycleCallbacks(this)
+        ProcessLifecycleOwner.get().lifecycle.removeObserver(this)
     }
 
     override fun onShow(
