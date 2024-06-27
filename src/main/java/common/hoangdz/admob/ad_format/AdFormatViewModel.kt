@@ -46,6 +46,9 @@ class AdFormatViewModel @Inject constructor(
         _bannerReloadRequester.compareAndSet(1 - _bannerReloadRequester.value)
     }
 
+    private val _nativeReloadRequester by lazy { MutableStateFlow(false) }
+    val nativeReloadRequester by lazy { _bannerReloadRequester.asStateFlow() }
+
     fun loadBanner(
         screenName: String,
         adView: AdView,
@@ -80,5 +83,9 @@ class AdFormatViewModel @Inject constructor(
             }
             nativeAdMapper.clear()
         }
+    }
+
+    fun reloadNative() {
+        _nativeReloadRequester.value = true
     }
 }
