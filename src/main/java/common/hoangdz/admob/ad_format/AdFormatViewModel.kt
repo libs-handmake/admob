@@ -1,6 +1,7 @@
 package common.hoangdz.admob.ad_format
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.ads.AdListener
@@ -42,12 +43,12 @@ class AdFormatViewModel @Inject constructor(
     private val _bannerReloadRequester by lazy { MutableStateFlow(0) }
     val bannerReloadRequester by lazy { _bannerReloadRequester.asStateFlow() }
 
+    private val _nativeReload by lazy { MutableStateFlow(false) }
+    val nativeReload by lazy { _nativeReload.asStateFlow() }
+
     fun requestReloadBanner() {
         _bannerReloadRequester.compareAndSet(1 - _bannerReloadRequester.value)
     }
-
-    private val _nativeReloadRequester by lazy { MutableStateFlow(false) }
-    val nativeReloadRequester by lazy { _bannerReloadRequester.asStateFlow() }
 
     fun loadBanner(
         screenName: String,
@@ -62,7 +63,15 @@ class AdFormatViewModel @Inject constructor(
     }
 
     fun loadNativeAds(requestId: String): MutableStateFlow<DataResult<NativeAd>> {
+        Log.d("TAG", "loadNativeAds: $requestId")
         val nativeLoaderState = synchronized(nativeAdMapper) {
+            if (_nativeReload.value){
+                nativeAdMapper[requestId]?.let {
+                    it.value.value?.destroy()
+                }
+                nativeAdMapper.remove(requestId)
+                _nativeReload.value = false
+            }
             nativeAdMapper[requestId] ?: MutableStateFlow(
                 DataResult<NativeAd>(
                     DataResult.DataState.IDLE
@@ -85,7 +94,7 @@ class AdFormatViewModel @Inject constructor(
         }
     }
 
-    fun reloadNative() {
-        _nativeReloadRequester.value = true
+    fun registerReloadNative(){
+        _nativeReload.value = true
     }
 }
