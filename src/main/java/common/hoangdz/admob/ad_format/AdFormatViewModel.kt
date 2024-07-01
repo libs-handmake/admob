@@ -43,9 +43,6 @@ class AdFormatViewModel @Inject constructor(
     private val _bannerReloadRequester by lazy { MutableStateFlow(0) }
     val bannerReloadRequester by lazy { _bannerReloadRequester.asStateFlow() }
 
-    private val _nativeReload by lazy { MutableStateFlow(false) }
-    val nativeReload by lazy { _nativeReload.asStateFlow() }
-
     fun requestReloadBanner() {
         _bannerReloadRequester.compareAndSet(1 - _bannerReloadRequester.value)
     }
@@ -63,15 +60,7 @@ class AdFormatViewModel @Inject constructor(
     }
 
     fun loadNativeAds(requestId: String): MutableStateFlow<DataResult<NativeAd>> {
-        Log.d("TAG", "loadNativeAds: $requestId")
         val nativeLoaderState = synchronized(nativeAdMapper) {
-            if (_nativeReload.value){
-                nativeAdMapper[requestId]?.let {
-                    it.value.value?.destroy()
-                }
-                nativeAdMapper.remove(requestId)
-                _nativeReload.value = false
-            }
             nativeAdMapper[requestId] ?: MutableStateFlow(
                 DataResult<NativeAd>(
                     DataResult.DataState.IDLE
@@ -94,7 +83,12 @@ class AdFormatViewModel @Inject constructor(
         }
     }
 
-    fun registerReloadNative(){
-        _nativeReload.value = true
+    fun registerReloadNative(idReload: String){
+        synchronized(nativeAdMapper) {
+            nativeAdMapper[idReload]?.let {
+                it.value.value?.destroy()
+            }
+            nativeAdMapper.remove(idReload)
+        }
     }
 }

@@ -29,12 +29,10 @@ fun NativeAdView(
     onLoaded: (() -> Unit)? = null,
     androidView: (Context, nativeAD: StateFlow<DataResult<NativeAd>>, owner: LifecycleOwner) -> NativeAdAndroidView
 ) {
-    val nativeReload by adViewModel.nativeReload.collectWhenResume()
-
     var callLoaded by remember {
         mutableStateOf(false)
     }
-    val adState = remember(key1 = requestID,nativeReload) {
+    val adState = remember(key1 = requestID) {
         adViewModel.loadNativeAds(requestID)
     }
     val adStateCollector by adState.collectWhenResume()
