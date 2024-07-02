@@ -10,6 +10,7 @@ import common.hoangdz.admob.ad_format.banner.BannerLoader
 import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdQueue
 import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdsLoader
 import common.hoangdz.lib.extensions.launchIO
+import common.hoangdz.lib.extensions.logError
 import common.hoangdz.lib.jetpack_compose.exts.compareAndSet
 import common.hoangdz.lib.utils.user.PremiumHolder
 import common.hoangdz.lib.viewmodels.AppViewModel
@@ -60,14 +61,13 @@ class AdFormatViewModel @Inject constructor(
 
     fun loadNativeAds(requestId: String): MutableStateFlow<DataResult<NativeAd>> {
         val nativeLoaderState = synchronized(nativeAdMapper) {
-            nativeAdMapper[requestId] ?: MutableStateFlow(
+            val state = nativeAdMapper[requestId] ?: MutableStateFlow(
                 DataResult<NativeAd>(
                     DataResult.DataState.IDLE
                 )
             ).also { nativeAdMapper[requestId] = it }
-        }
-        viewModelScope.launchIO {
-            nativeAdsLoader.enqueueNativeAds(NativeAdQueue(requestId, nativeLoaderState))
+            nativeAdsLoader.enqueueNativeAds(NativeAdQueue(requestId, state))
+            state
         }
         return nativeLoaderState
     }

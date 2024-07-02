@@ -4,6 +4,7 @@ import android.content.Context
 import common.hoangdz.admob.config.ad_id.AdIds
 import common.hoangdz.admob.config.shared.AdShared
 import common.hoangdz.lib.extensions.availableToLoad
+import common.hoangdz.lib.extensions.logError
 import common.hoangdz.lib.viewmodels.DataResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
