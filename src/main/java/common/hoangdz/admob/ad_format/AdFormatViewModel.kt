@@ -1,7 +1,6 @@
 package common.hoangdz.admob.ad_format
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.ads.AdListener
@@ -83,12 +82,13 @@ class AdFormatViewModel @Inject constructor(
         }
     }
 
-    fun registerReloadNative(idReload: String){
+    fun registerReloadNative() {
         synchronized(nativeAdMapper) {
-            nativeAdMapper[idReload]?.let {
-                it.value.value?.destroy()
+            for (entry in nativeAdMapper) {
+                entry.value.value?.value?.destroy()
+                entry.value.value = DataResult(DataResult.DataState.IDLE)
             }
-            nativeAdMapper.remove(idReload)
+//            nativeAdMapper.remove(idReload)
         }
     }
 }

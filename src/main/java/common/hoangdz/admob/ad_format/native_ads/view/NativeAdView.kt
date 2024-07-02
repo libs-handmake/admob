@@ -32,9 +32,7 @@ fun NativeAdView(
     var callLoaded by remember {
         mutableStateOf(false)
     }
-    val adState = remember(key1 = requestID) {
-        adViewModel.loadNativeAds(requestID)
-    }
+    val adState = adViewModel.loadNativeAds(requestID)
     val adStateCollector by adState.collectWhenResume()
     val owner = LocalLifecycleOwner.current
     val premiumState by adViewModel.isPremium.collectWhenResume()
