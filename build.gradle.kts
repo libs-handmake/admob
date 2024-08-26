@@ -8,6 +8,9 @@ plugins {
 
 android {
     namespace = "common.hoangdz.admob"
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
