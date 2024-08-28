@@ -9,7 +9,11 @@ import common.hoangdz.admob.config.shared.AdSharedSetting.INTER_GAP
 import common.hoangdz.admob.config.shared.AdSharedSetting.MAX_GAP_WATER_FLOOR
 import common.hoangdz.admob.config.shared.AdSharedSetting.MAX_NATIVE_AD_THRESHOLD
 import common.hoangdz.admob.config.shared.AdSharedSetting.MIN_GAP_WATER_FLOOR
+import common.hoangdz.admob.config.shared.AdSharedSetting.NATIVE_AD_CONFIG
 import common.hoangdz.admob.config.shared.AdSharedSetting.USE_WATER_FLOW
+import common.hoangdz.lib.extensions.createFromJson
+import common.hoangdz.lib.extensions.setString
+import common.hoangdz.lib.extensions.toJson
 import common.hoangdz.lib.utils.PreferenceHelper
 import common.hoangdz.lib.utils.ads.GlobalAdState
 
@@ -71,5 +75,18 @@ class AdShared_Impl(context: Context) : PreferenceHelper(context), AdShared {
         }
     override val canShowAppOpen: Boolean
         get() = System.currentTimeMillis() - AdState.lastTimeShowAppOpenAds > appOpenGap && System.currentTimeMillis() - AdState.lastTimeShowInterAds > fullScreenGap && canShowFullScreenAds
+
+    override var nativeAdConfigJson: String
+        get() = pref.getString(NATIVE_AD_CONFIG.first, NATIVE_AD_CONFIG.second)
+            ?: NATIVE_AD_CONFIG.second
+        set(value) {
+            pref.setString(NATIVE_AD_CONFIG.first, value)
+        }
+
+    override var nativeAdConfig: Map<String, Boolean>
+        get() = nativeAdConfigJson.createFromJson() ?: mapOf()
+        private set(value) {
+            nativeAdConfigJson = value.toJson()
+        }
 
 }

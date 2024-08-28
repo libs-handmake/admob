@@ -17,7 +17,11 @@ interface AdShared {
 
     var fullScreenGap: Long
 
-    val canShowInterstitial:Boolean
+    val canShowInterstitial: Boolean
 
-    val canShowAppOpen:Boolean
+    val canShowAppOpen: Boolean
+
+    var nativeAdConfigJson: String
+
+    val nativeAdConfig: Map<String, Boolean>
 }

@@ -29,6 +29,7 @@ fun NativeAdView(
     onLoaded: (() -> Unit)? = null,
     androidView: (Context, nativeAD: StateFlow<DataResult<NativeAd>>, owner: LifecycleOwner) -> NativeAdAndroidView
 ) {
+    if (!adViewModel.checkNativeAvailable(requestID)) return
     var callLoaded by remember {
         mutableStateOf(false)
     }

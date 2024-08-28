@@ -12,6 +12,7 @@ import common.hoangdz.admob.config.shared.AdSharedSetting.INTER_GAP
 import common.hoangdz.admob.config.shared.AdSharedSetting.MAX_GAP_WATER_FLOOR
 import common.hoangdz.admob.config.shared.AdSharedSetting.MAX_NATIVE_AD_THRESHOLD
 import common.hoangdz.admob.config.shared.AdSharedSetting.MIN_GAP_WATER_FLOOR
+import common.hoangdz.admob.config.shared.AdSharedSetting.NATIVE_AD_CONFIG
 import common.hoangdz.admob.config.shared.AdSharedSetting.USE_WATER_FLOW
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,7 +21,10 @@ import javax.inject.Singleton
 class AdRemoteConfig @Inject constructor(
     private val adShared: AdShared
 ) {
-    fun fetchRemoteConfig(remoteConfigDefault: Map<String,Any>, onRemoteFetched: (config: FirebaseRemoteConfig) -> Unit) {
+    fun fetchRemoteConfig(
+        remoteConfigDefault: Map<String, Any>,
+        onRemoteFetched: (config: FirebaseRemoteConfig) -> Unit
+    ) {
         val remote = Firebase.remoteConfig
         val settings = remoteConfigSettings {
             minimumFetchIntervalInSeconds = 3600L
@@ -28,7 +32,7 @@ class AdRemoteConfig @Inject constructor(
         }
         remote.setConfigSettingsAsync(settings)
         remote.setDefaultsAsync(
-            hashMapOf<String,Any>(
+            hashMapOf<String, Any>(
                 MAX_NATIVE_AD_THRESHOLD.first to adShared.nativeLoaderThreshold,
                 MIN_GAP_WATER_FLOOR.first to adShared.minGapWaterFloor,
                 MAX_GAP_WATER_FLOOR.first to adShared.maxGapWaterFloor,
@@ -36,7 +40,8 @@ class AdRemoteConfig @Inject constructor(
                 USE_WATER_FLOW.first to adShared.useWaterFlow,
                 INTER_GAP.first to adShared.interstitialGap,
                 APP_OPEN_GAP.first to adShared.appOpenGap,
-                FULL_SCREEN_GAP.first to adShared.fullScreenGap
+                FULL_SCREEN_GAP.first to adShared.fullScreenGap,
+                NATIVE_AD_CONFIG.first to adShared.nativeAdConfigJson
             ).also {
                 it.putAll(remoteConfigDefault)
             }.toMap()
@@ -56,5 +61,6 @@ class AdRemoteConfig @Inject constructor(
         adShared.interstitialGap = remote.getLong(INTER_GAP.first)
         adShared.appOpenGap = remote.getLong(APP_OPEN_GAP.first)
         adShared.fullScreenGap = remote.getLong(FULL_SCREEN_GAP.first)
+        adShared.nativeAdConfigJson = remote.getString(NATIVE_AD_CONFIG.first)
     }
 }

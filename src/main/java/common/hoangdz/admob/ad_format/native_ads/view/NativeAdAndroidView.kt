@@ -2,7 +2,6 @@ package common.hoangdz.admob.ad_format.native_ads.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -32,7 +31,7 @@ class NativeAdAndroidView : FrameLayout {
 
     private var iconBindingView: ImageView? = null
 
-    private var callToActionBindingView: Button? = null
+    private var callToActionBindingView: TextView? = null
 
     private var adLabelView: TextView? = null
 
