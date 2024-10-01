@@ -6,6 +6,7 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.nativead.NativeAd
 import common.hoangdz.admob.ad_format.banner.BannerLoader
+import common.hoangdz.admob.ad_format.full_screen_native_ads.loader.FullScreenNativeAdsLoader
 import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdQueue
 import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdsLoader
 import common.hoangdz.admob.config.shared.AdShared
@@ -23,6 +24,7 @@ class AdFormatViewModel @Inject constructor(
     application: Application,
     private val bannerLoader: BannerLoader,
     private val nativeAdsLoader: NativeAdsLoader,
+    private val fullScreenNativeAdsLoader: FullScreenNativeAdsLoader,
     private val premiumHolder: PremiumHolder,
     private val adShared: AdShared
 ) : AppViewModel(application) {
@@ -33,7 +35,10 @@ class AdFormatViewModel @Inject constructor(
 
     val isPremiumValue get() = premiumHolder.isPremium
 
+    private val bannerConfig by lazy { adShared.bannerScreenConfigs }
+
     private val nativeAdMapper by lazy { hashMapOf<String, MutableStateFlow<DataResult<NativeAd>>>() }
+    private val fullScreenNativeAdMapper by lazy { hashMapOf<String, MutableStateFlow<DataResult<NativeAd>>>() }
 
     private val _bannerLoaderState by lazy {
         MutableStateFlow(DataResult<AdView>(DataResult.DataState.IDLE))
@@ -47,6 +52,8 @@ class AdFormatViewModel @Inject constructor(
     fun requestReloadBanner() {
         _bannerReloadRequester.compareAndSet(1 - _bannerReloadRequester.value)
     }
+
+    fun bannerConfigOf(id: String) = bannerConfig[id]
 
     fun checkNativeAvailable(id: String) = nativeConfig[id] ?: true
 
@@ -75,6 +82,19 @@ class AdFormatViewModel @Inject constructor(
         return nativeLoaderState
     }
 
+    fun loadFullScreenNativeAds(requestId: String): MutableStateFlow<DataResult<NativeAd>> {
+        val nativeLoaderState = synchronized(fullScreenNativeAdMapper) {
+            val state = fullScreenNativeAdMapper[requestId] ?: MutableStateFlow(
+                DataResult<NativeAd>(
+                    DataResult.DataState.IDLE
+                )
+            ).also { fullScreenNativeAdMapper[requestId] = it }
+            fullScreenNativeAdsLoader.enqueueNativeAds(NativeAdQueue(requestId, state))
+            state
+        }
+        return nativeLoaderState
+    }
+
     override fun onCleared() {
         super.onCleared()
         synchronized(nativeAdMapper) {
@@ -82,6 +102,12 @@ class AdFormatViewModel @Inject constructor(
                 it.value.value.value?.destroy()
             }
             nativeAdMapper.clear()
+        }
+        synchronized(fullScreenNativeAdMapper) {
+            fullScreenNativeAdMapper.entries.forEach {
+                it.value.value.value?.destroy()
+            }
+            fullScreenNativeAdMapper.clear()
         }
     }
 

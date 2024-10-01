@@ -19,4 +19,6 @@ open class ADIdsDebug : AdIds {
         get() = "ca-app-pub-3940256099942544/5224354917"
     override val appOpenID: String
         get() = "ca-app-pub-3940256099942544/9257395921"
+    override val nativeFullScreen: String
+        get() = "ca-app-pub-3940256099942544/7342230711"
 }

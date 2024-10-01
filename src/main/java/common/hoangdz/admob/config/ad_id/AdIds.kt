@@ -18,4 +18,6 @@ interface AdIds {
     val rewardID: String
 
     val appOpenID: String
+
+    val nativeFullScreen:String
 }

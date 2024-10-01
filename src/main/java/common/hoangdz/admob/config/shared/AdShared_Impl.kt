@@ -1,8 +1,10 @@
 package common.hoangdz.admob.config.shared
 
 import android.content.Context
+import common.hoangdz.admob.ad_format.banner.state_holder.ScreenBannerState
 import common.hoangdz.admob.config.AdState
 import common.hoangdz.admob.config.shared.AdSharedSetting.APP_OPEN_GAP
+import common.hoangdz.admob.config.shared.AdSharedSetting.BANNER_SCREEN_CONFIG
 import common.hoangdz.admob.config.shared.AdSharedSetting.FULL_SCREEN_GAP
 import common.hoangdz.admob.config.shared.AdSharedSetting.IGNORED_GAP_THRESHOLD
 import common.hoangdz.admob.config.shared.AdSharedSetting.INTER_GAP
@@ -75,6 +77,19 @@ class AdShared_Impl(context: Context) : PreferenceHelper(context), AdShared {
         }
     override val canShowAppOpen: Boolean
         get() = System.currentTimeMillis() - AdState.lastTimeShowAppOpenAds > appOpenGap && System.currentTimeMillis() - AdState.lastTimeShowInterAds > fullScreenGap && canShowFullScreenAds
+
+    override var bannerScreenConfigJson: String
+        get() = pref.getString(BANNER_SCREEN_CONFIG.first, BANNER_SCREEN_CONFIG.second)
+            ?: BANNER_SCREEN_CONFIG.second
+        set(value) {
+            putString(BANNER_SCREEN_CONFIG.first, value)
+        }
+
+    override var bannerScreenConfigs: Map<String, ScreenBannerState>
+        get() = bannerScreenConfigJson.createFromJson() ?: mapOf()
+        set(value) {
+            bannerScreenConfigJson = value.toJson()
+        }
 
     override var nativeAdConfigJson: String
         get() = pref.getString(NATIVE_AD_CONFIG.first, NATIVE_AD_CONFIG.second)

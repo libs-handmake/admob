@@ -15,6 +15,7 @@ import common.hoangdz.admob.config.AdState
 data class NativeAdKeeper(
     private val context: Context,
     private val adId: String,
+    private val onAdLoaderBuilder: AdLoader.Builder.() -> Unit = {},
     private val onFailedToLoad: (LoadAdError) -> Unit = {},
     private val onLoaded: (NativeAdKeeper) -> Unit = {}
 ) {
@@ -24,7 +25,7 @@ data class NativeAdKeeper(
     var nativeAd: NativeAd? = null
 
     private val adLoader by lazy {
-        AdLoader.Builder(context, adId).forNativeAd {
+        AdLoader.Builder(context, adId).also { onAdLoaderBuilder.invoke(it) }.forNativeAd {
             it.setOnPaidEventListener { adValue ->
                 AdState.onPaidEvent?.invoke(
                     adValue, it.responseInfo ?: return@setOnPaidEventListener

@@ -18,4 +18,6 @@ object AdSharedSetting {
     val FULL_SCREEN_GAP = "full_screen_gap" to 0L
 
     val NATIVE_AD_CONFIG = "native_ad_config" to "{}"
+
+    val BANNER_SCREEN_CONFIG = "banner_screen_config" to "{}"
 }

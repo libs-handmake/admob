@@ -9,6 +9,10 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import common.hoangdz.admob.di.entry_point.AdmobEntryPoint
 import common.hoangdz.admob.utils.user_message_platform.UserConsentRequester
 import common.hoangdz.lib.extensions.appInject
+import common.hoangdz.lib.extensions.launchIO
+import common.hoangdz.lib.extensions.launchMain
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 
 class AdmobLibs {
     companion object {
@@ -34,6 +38,7 @@ class AdmobLibs {
             }
         }
 
+        @OptIn(DelicateCoroutinesApi::class)
         fun initialize(
             context: Context,
             remoteConfigDefault: Map<String, Any>?,
@@ -65,9 +70,15 @@ class AdmobLibs {
                 ).build()
                 onBiddingConsentApply?.invoke()
                 MobileAds.setRequestConfiguration(configuration)
-                MobileAds.initialize(context) {
-                    initialized = true
-                    if (initAppOpen) admobEntryPoint.appOpenLoader().load(null)
+                GlobalScope.launchIO {
+                    MobileAds.initialize(context) {
+                        initialized = true
+                        if (initAppOpen) {
+                            GlobalScope.launchMain {
+                                admobEntryPoint.appOpenLoader().load(null)
+                            }
+                        }
+                    }
                 }
                 onRemoteFetched(it)
             }

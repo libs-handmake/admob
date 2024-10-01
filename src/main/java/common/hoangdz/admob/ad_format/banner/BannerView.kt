@@ -12,11 +12,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.android.gms.ads.AdView
 import common.hoangdz.admob.ad_format.AdFormatViewModel
 import common.hoangdz.lib.jetpack_compose.exts.SafeModifier
@@ -28,11 +28,16 @@ import ir.kaaveh.sdpcompose.sdp
 
 @Composable
 fun BannerView(
-    usingCollapsible: Boolean = false, adFormatViewModel: AdFormatViewModel = hiltViewModel()
+    usingCollapsible: Boolean = false,
+    id: String = LocalScreenConfigs.current.actualRouteName,
+    adFormatViewModel: AdFormatViewModel = hiltViewModel()
 ) {
     val owner = LocalLifecycleOwner.current
     val loaderStateCollection by adFormatViewModel.bannerLoaderState.collectWhenResume()
-    if (loaderStateCollection.state != DataResult.DataState.ERROR) {
+    if (loaderStateCollection.state != DataResult.DataState.ERROR && adFormatViewModel.bannerConfigOf(
+            id
+        )?.showBanner != true
+    ) {
         var adView by remember {
             mutableStateOf<AdView?>(null)
         }
@@ -59,7 +64,10 @@ fun BannerView(
                 return@AndroidView AdView(it).also { view ->
                     adView = view
                     adFormatViewModel.loadBanner(
-                        config.route.replace("\\?.*".toRegex(), ""), view, usingCollapsible, owner
+                        config.actualRouteName,
+                        view,
+                        usingCollapsible || adFormatViewModel.bannerConfigOf(id)?.useCollapsed == true,
+                        owner
                     )
                 }
             })

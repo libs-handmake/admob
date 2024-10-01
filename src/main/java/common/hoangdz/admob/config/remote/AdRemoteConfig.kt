@@ -6,6 +6,7 @@ import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import common.hoangdz.admob.config.shared.AdShared
 import common.hoangdz.admob.config.shared.AdSharedSetting.APP_OPEN_GAP
+import common.hoangdz.admob.config.shared.AdSharedSetting.BANNER_SCREEN_CONFIG
 import common.hoangdz.admob.config.shared.AdSharedSetting.FULL_SCREEN_GAP
 import common.hoangdz.admob.config.shared.AdSharedSetting.IGNORED_GAP_THRESHOLD
 import common.hoangdz.admob.config.shared.AdSharedSetting.INTER_GAP
@@ -41,7 +42,8 @@ class AdRemoteConfig @Inject constructor(
                 INTER_GAP.first to adShared.interstitialGap,
                 APP_OPEN_GAP.first to adShared.appOpenGap,
                 FULL_SCREEN_GAP.first to adShared.fullScreenGap,
-                NATIVE_AD_CONFIG.first to adShared.nativeAdConfigJson
+                NATIVE_AD_CONFIG.first to adShared.nativeAdConfigJson,
+                BANNER_SCREEN_CONFIG.first to adShared.bannerScreenConfigJson
             ).also {
                 it.putAll(remoteConfigDefault)
             }.toMap()
@@ -62,5 +64,6 @@ class AdRemoteConfig @Inject constructor(
         adShared.appOpenGap = remote.getLong(APP_OPEN_GAP.first)
         adShared.fullScreenGap = remote.getLong(FULL_SCREEN_GAP.first)
         adShared.nativeAdConfigJson = remote.getString(NATIVE_AD_CONFIG.first)
+        adShared.bannerScreenConfigJson = remote.getString(BANNER_SCREEN_CONFIG.first)
     }
 }

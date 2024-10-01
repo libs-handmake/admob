@@ -1,5 +1,7 @@
 package common.hoangdz.admob.config.shared
 
+import common.hoangdz.admob.ad_format.banner.state_holder.ScreenBannerState
+
 interface AdShared {
     var nativeLoaderThreshold: Int
 
@@ -20,6 +22,10 @@ interface AdShared {
     val canShowInterstitial: Boolean
 
     val canShowAppOpen: Boolean
+
+    var bannerScreenConfigJson: String
+
+    var bannerScreenConfigs: Map<String, ScreenBannerState>
 
     var nativeAdConfigJson: String
 

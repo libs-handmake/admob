@@ -1,4 +1,4 @@
-package common.hoangdz.admob.ad_format.native_ads.view
+package common.hoangdz.admob.ad_format.full_screen_native_ads.view
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box
@@ -20,19 +20,19 @@ import common.hoangdz.lib.viewmodels.DataResult
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun NativeAdView(
+fun FullScreenNativeAdView(
     modifier: Modifier = SafeModifier,
     adViewModel: AdFormatViewModel,
     requestID: String,
     loading: (@Composable () -> Unit)? = null,
     onLoaded: (() -> Unit)? = null,
-    androidView: (Context, nativeAD: StateFlow<DataResult<NativeAd>>, owner: LifecycleOwner) -> NativeAdAndroidView
+    androidView: (Context, nativeAD: StateFlow<DataResult<NativeAd>>, owner: LifecycleOwner) -> FullScreenNativeAdAndroidView
 ) {
     if (!adViewModel.checkNativeAvailable(requestID)) return
     var callLoaded by remember {
         mutableStateOf(false)
     }
-    val adState = adViewModel.loadNativeAds(requestID)
+    val adState = adViewModel.loadFullScreenNativeAds(requestID)
     val adStateCollector by adState.collectWhenResume()
     val owner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     val premiumState by adViewModel.isPremium.collectWhenResume()

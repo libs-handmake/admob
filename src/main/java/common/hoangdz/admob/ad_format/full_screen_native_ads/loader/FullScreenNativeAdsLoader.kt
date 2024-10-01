@@ -1,6 +1,12 @@
-package common.hoangdz.admob.ad_format.native_ads.loader
+package common.hoangdz.admob.ad_format.full_screen_native_ads.loader
 
 import android.content.Context
+import com.google.android.gms.ads.MediaAspectRatio
+import com.google.android.gms.ads.VideoOptions
+import com.google.android.gms.ads.nativead.NativeAdOptions
+import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdHolder
+import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdKeeper
+import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdQueue
 import common.hoangdz.admob.config.ad_id.AdIds
 import common.hoangdz.admob.config.shared.AdShared
 import common.hoangdz.lib.extensions.availableToLoad
@@ -10,7 +16,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NativeAdsLoader @Inject constructor(
+class FullScreenNativeAdsLoader @Inject constructor(
     @ApplicationContext private val context: Context,
     private val adIds: AdIds,
     private val adShared: AdShared
@@ -21,6 +27,8 @@ class NativeAdsLoader @Inject constructor(
     private val nativeAdQueue by lazy { mutableListOf<NativeAdQueue>() }
 
     private var loadingAds = 0
+
+    val availableNativeAd get() = nativeAdHolder.availableNativeAd
 
     private fun distributeAds(responseErrorIfFailed: Boolean) = synchronized(nativeAdQueue) {
         synchronized(nativeAdQueue) {
@@ -38,19 +46,26 @@ class NativeAdsLoader @Inject constructor(
         loadNativeAdIfNeeded()
     }
 
-    private fun loadNativeAdIfNeeded() {
-        val needToLoad = adShared.nativeLoaderThreshold - nativeAdHolder.availableNativeAd
-        if (needToLoad > loadingAds) {
-            loadingAds++
-            NativeAdKeeper(context, adIds.nativeID, {}, {
-                distributeAds(true)
-                loadingAds--
-            }, {
-                loadingAds--
-                nativeAdHolder.appendNativeAd(it)
-                distributeAds(false)
-            }).loadAd()
-        }
+    fun loadNativeAdIfNeeded(forceLoadAds: Boolean = false) {
+        val needToLoad = adShared.nativeLoaderThreshold - availableNativeAd
+        if ((loadingAds >= needToLoad || availableNativeAd >= needToLoad) && !forceLoadAds) return
+        loadingAds++
+        NativeAdKeeper(context, adIds.nativeFullScreen, {
+            val videoOptions =
+                VideoOptions.Builder().setStartMuted(false).setCustomControlsRequested(false)
+                    .build()
+            val adOptions = NativeAdOptions.Builder().setMediaAspectRatio(MediaAspectRatio.PORTRAIT)
+                .setVideoOptions(videoOptions).build()
+            withNativeAdOptions(adOptions)
+        }, {
+            distributeAds(true)
+            loadingAds--
+        }, {
+            loadingAds--
+            nativeAdHolder.appendNativeAd(it)
+            distributeAds(false)
+        }).loadAd()
+
     }
 
     fun enqueueNativeAds(queue: NativeAdQueue) {
