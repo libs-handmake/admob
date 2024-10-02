@@ -100,12 +100,14 @@ class AdFormatViewModel @Inject constructor(
         synchronized(nativeAdMapper) {
             nativeAdMapper.entries.forEach {
                 it.value.value.value?.destroy()
+                nativeAdsLoader.removeQueue(it.key)
             }
             nativeAdMapper.clear()
         }
         synchronized(fullScreenNativeAdMapper) {
             fullScreenNativeAdMapper.entries.forEach {
                 it.value.value.value?.destroy()
+                fullScreenNativeAdsLoader.removeQueue(it.key)
             }
             fullScreenNativeAdMapper.clear()
         }

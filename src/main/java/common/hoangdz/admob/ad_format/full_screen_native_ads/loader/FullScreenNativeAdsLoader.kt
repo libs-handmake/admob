@@ -31,17 +31,15 @@ class FullScreenNativeAdsLoader @Inject constructor(
     val availableNativeAd get() = nativeAdHolder.availableNativeAd
 
     private fun distributeAds(responseErrorIfFailed: Boolean) = synchronized(nativeAdQueue) {
-        synchronized(nativeAdQueue) {
-            while (nativeAdQueue.isNotEmpty()) {
-                val queue = nativeAdQueue.firstOrNull() ?: break
-                val nativeAd = nativeAdHolder.getNativeAd(queue.queueID)
-                queue.adState.value = if (nativeAd != null) {
-                    DataResult(
-                        DataResult.DataState.LOADED, nativeAd
-                    )
-                } else if (responseErrorIfFailed) DataResult(DataResult.DataState.ERROR) else break
-                nativeAdQueue.removeFirst()
-            }
+        while (nativeAdQueue.isNotEmpty()) {
+            val queue = nativeAdQueue.firstOrNull() ?: break
+            val nativeAd = nativeAdHolder.getNativeAd(queue.queueID)
+            queue.adState.value = if (nativeAd != null) {
+                DataResult(
+                    DataResult.DataState.LOADED, nativeAd
+                )
+            } else if (responseErrorIfFailed) DataResult(DataResult.DataState.ERROR) else break
+            nativeAdQueue.removeFirst()
         }
         loadNativeAdIfNeeded()
     }
@@ -66,6 +64,10 @@ class FullScreenNativeAdsLoader @Inject constructor(
             distributeAds(false)
         }).loadAd()
 
+    }
+
+    fun removeQueue(id: String) = synchronized(nativeAdQueue) {
+        nativeAdQueue.removeAll { it.queueID == id }
     }
 
     fun enqueueNativeAds(queue: NativeAdQueue) {
