@@ -1,20 +1,25 @@
 package common.hoangdz.admob.ad_format.native_ads.loader
 
-import android.content.Context
+import android.app.Activity
 import common.hoangdz.admob.config.ad_id.AdIds
 import common.hoangdz.admob.config.shared.AdShared
 import common.hoangdz.lib.extensions.availableToLoad
 import common.hoangdz.lib.viewmodels.DataResult
-import dagger.hilt.android.qualifiers.ApplicationContext
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class NativeAdsLoader @Inject constructor(
-    @ApplicationContext private val context: Context,
-    private val adIds: AdIds,
-    private val adShared: AdShared
+    private val adIds: AdIds, private val adShared: AdShared
 ) {
+
+    var activity: WeakReference<Activity>? = null
+
+    fun clearUnavailableNativeAds(activity: Activity) {
+        this.activity?.clear()
+        nativeAdHolder.clearUnAvailableNative(activity)
+    }
 
     private val nativeAdHolder by lazy { NativeAdHolder() }
 
@@ -40,7 +45,10 @@ class NativeAdsLoader @Inject constructor(
         val needToLoad = adShared.nativeLoaderThreshold - nativeAdHolder.availableNativeAd
         if (needToLoad > loadingAds) {
             loadingAds++
-            NativeAdKeeper(context, adIds.nativeID, {}, {
+            NativeAdKeeper(activity?.get() ?: kotlin.run {
+                loadingAds--
+                return
+            }, adIds.nativeID, {}, {
                 distributeAds(true)
                 loadingAds--
             }, {

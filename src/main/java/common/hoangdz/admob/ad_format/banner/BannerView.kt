@@ -36,7 +36,7 @@ fun BannerView(
     val loaderStateCollection by adFormatViewModel.bannerLoaderState.collectWhenResume()
     if (loaderStateCollection.state != DataResult.DataState.ERROR && adFormatViewModel.bannerConfigOf(
             id
-        )?.showBanner != true
+        )?.showBanner != false
     ) {
         var adView by remember {
             mutableStateOf<AdView?>(null)

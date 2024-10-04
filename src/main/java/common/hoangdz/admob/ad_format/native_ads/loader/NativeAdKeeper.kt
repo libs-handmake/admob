@@ -13,7 +13,7 @@ import com.google.firebase.ktx.Firebase
 import common.hoangdz.admob.config.AdState
 
 data class NativeAdKeeper(
-    private val context: Context,
+    val context: Context,
     private val adId: String,
     private val onAdLoaderBuilder: AdLoader.Builder.() -> Unit = {},
     private val onFailedToLoad: (LoadAdError) -> Unit = {},

@@ -1,7 +1,7 @@
 package common.hoangdz.admob.ad_format.native_ads.loader
 
+import android.app.Activity
 import com.google.android.gms.ads.nativead.NativeAd
-import common.hoangdz.lib.extensions.logError
 
 class NativeAdHolder {
     private val savedNativeAds by lazy { mutableListOf<NativeAdKeeper>() }
@@ -30,6 +30,15 @@ class NativeAdHolder {
                 nativeAd.nativeAd?.destroy()
             }
             savedNativeAds.clear()
+        }
+    }
+
+    fun clearUnAvailableNative(activity: Activity) {
+        synchronized(savedNativeAds) {
+            savedNativeAds.removeAll {
+                it.nativeAd?.destroy()
+                it.context == activity
+            }
         }
     }
 }
