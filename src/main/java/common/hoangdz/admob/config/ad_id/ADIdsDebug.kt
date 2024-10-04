@@ -8,11 +8,11 @@ open class ADIdsDebug : AdIds {
     override val interstitialID: String
         get() = "ca-app-pub-3940256099942544/1033173712"
     override val interHighFloorID: String
-        get() = "ca-app-pub-3940256099942544/1033173712"
+        get() = interstitialID
     override val interMediumFloorId: String
-        get() = "ca-app-pub-3940256099942544/1033173712"
+        get() = interstitialID
     override val interAllPriceFloorId: String
-        get() = "ca-app-pub-3940256099942544/1033173712"
+        get() = interstitialID
     override val interRewardID: String
         get() = ""
     override val rewardID: String
