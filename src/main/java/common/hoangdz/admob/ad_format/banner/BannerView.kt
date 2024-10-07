@@ -66,7 +66,7 @@ fun BannerView(
                     adFormatViewModel.loadBanner(
                         config.actualRouteName,
                         view,
-                        usingCollapsible || adFormatViewModel.bannerConfigOf(id)?.useCollapsed == true,
+                        usingCollapsible || adFormatViewModel.bannerConfigOf(id)?.useCollapsed != false,
                         owner
                     )
                 }
