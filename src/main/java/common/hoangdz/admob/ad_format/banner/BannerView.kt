@@ -28,7 +28,7 @@ import ir.kaaveh.sdpcompose.sdp
 
 @Composable
 fun BannerView(
-    usingCollapsible: Boolean = false,
+    usingCollapsible: Boolean = true,
     id: String = LocalScreenConfigs.current.actualRouteName,
     adFormatViewModel: AdFormatViewModel = hiltViewModel()
 ) {
@@ -66,7 +66,7 @@ fun BannerView(
                     adFormatViewModel.loadBanner(
                         config.actualRouteName,
                         view,
-                        usingCollapsible || adFormatViewModel.bannerConfigOf(id)?.useCollapsed != false,
+                        usingCollapsible && adFormatViewModel.bannerConfigOf(id)?.useCollapsed != false,
                         owner
                     )
                 }
