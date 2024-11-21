@@ -19,5 +19,9 @@ object AdSharedSetting {
 
     val NATIVE_AD_CONFIG = "native_ad_config" to "{}"
 
+    val NATIVE_RELOAD_INTERVAL = "native_reload_interval" to 30_000L
+
+    val USE_INTER_ON_BACK = "use_inter_on_back" to true
+
     val BANNER_SCREEN_CONFIG = "banner_screen_config" to "{}"
 }

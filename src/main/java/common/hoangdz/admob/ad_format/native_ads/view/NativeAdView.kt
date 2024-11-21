@@ -22,13 +22,13 @@ fun NativeAdView(
     modifier: Modifier = SafeModifier,
     adViewModel: AdFormatViewModel,
     requestID: String,
-    requireReload: Boolean = false,
+    requireReload: Boolean = true,
     loading: (@Composable () -> Unit)? = null,
     onLoaded: (() -> Unit)? = null,
     androidView: (Context, nativeAD: StateFlow<DataResult<NativeAd>>, owner: LifecycleOwner) -> NativeAdAndroidView
 ) {
     if (!adViewModel.checkNativeAvailable(requestID)) return
-    val adBinding = adViewModel.loadNativeAds(requestID)
+    val adBinding = adViewModel.loadNativeAds(requestID, requireReload)
     val adStateCollector by adBinding.nativeAdState.collectWhenResume()
     val owner = LocalLifecycleOwner.current
     val premiumState by adViewModel.isPremium.collectWhenResume()
@@ -37,7 +37,7 @@ fun NativeAdView(
     }
 
     LaunchedEffect(key1 = owner) {
-        adBinding.attachToLifeCycle(owner)
+        adBinding.attachToLifecycle(owner)
     }
 
     LaunchedEffect(key1 = adStateCollector.state) {

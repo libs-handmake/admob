@@ -30,4 +30,8 @@ interface AdShared {
     var nativeAdConfigJson: String
 
     val nativeAdConfig: Map<String, Boolean>
+
+    var nativeReloadInterval :Long
+
+    var useInterOnBack:Boolean
 }

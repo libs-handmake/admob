@@ -8,6 +8,7 @@ import com.google.android.gms.ads.nativead.NativeAd
 import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdQueue
 import common.hoangdz.admob.di.entry_point.AdmobEntryPoint
 import common.hoangdz.lib.extensions.appInject
+import common.hoangdz.lib.extensions.logError
 import common.hoangdz.lib.viewmodels.DataResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -28,9 +29,9 @@ class NativeAdBinding(
 
     private val admobEntryPoint by lazy { context.appInject<AdmobEntryPoint>() }
 
-    private val nativeAdsLoader by lazy { admobEntryPoint.nativeAdsLoader() }
+    private val adShared by lazy { admobEntryPoint.adsShared() }
 
-    private val intervalToReload = 5_000
+    private val nativeAdsLoader by lazy { admobEntryPoint.nativeAdsLoader() }
 
     private var reloadJob: Job? = null
 
@@ -38,9 +39,10 @@ class NativeAdBinding(
 
     private var paused = false
 
-    fun attachToLifeCycle(owner: LifecycleOwner) {
+    fun attachToLifecycle(owner: LifecycleOwner) {
         currentOwner?.lifecycle?.removeObserver(this)
-        owner.lifecycle.removeObserver(this)
+        owner.lifecycle.addObserver(this)
+        startReload()
         currentOwner = owner
     }
 
@@ -49,7 +51,7 @@ class NativeAdBinding(
             nativeAdState.collect {
                 if (it.state == DataResult.DataState.LOADED && it.value != null) {
                     timeLoaded = System.currentTimeMillis()
-                    if (!paused) reloadAd()
+                    if (!paused) startReload()
                 }
             }
         }
@@ -59,8 +61,9 @@ class NativeAdBinding(
         stopReload()
         if (nativeAdState.value.state == DataResult.DataState.LOADING) return
         if (!reloadable && nativeAdState.value.state != DataResult.DataState.IDLE) return
+        val time = adShared.nativeReloadInterval - (System.currentTimeMillis() - timeLoaded)
+        timeLoaded = System.currentTimeMillis()
         reloadJob = scope.launch {
-            val time = intervalToReload - (System.currentTimeMillis() - timeLoaded)
             if (time > 0) delay(time)
             reloadAd()
         }
@@ -71,6 +74,7 @@ class NativeAdBinding(
         nativeAdState.value = DataResult(DataResult.DataState.IDLE)
         nativeAd?.destroy()
         nativeAdsLoader.enqueueNativeAds(NativeAdQueue(id, nativeAdState))
+        logError("reloadAd $id")
     }
 
     fun stopReload() {
@@ -83,6 +87,7 @@ class NativeAdBinding(
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        logError("onStateChanged $event")
         if (event == Lifecycle.Event.ON_PAUSE || event == Lifecycle.Event.ON_STOP) {
             paused = true
             stopReload()

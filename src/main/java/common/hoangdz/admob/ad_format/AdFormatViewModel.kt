@@ -80,9 +80,8 @@ class AdFormatViewModel @Inject constructor(
     ): NativeAdBinding {
         val nativeLoaderState = synchronized(nativeAdMapper) {
             val state = nativeAdMapper[requestId] ?: NativeAdBinding(
-                context, requestId, viewModelScope
+                context, requestId, viewModelScope, reload
             ).also {
-                it.startReload()
                 nativeAdMapper[requestId] = it
             }
             state
