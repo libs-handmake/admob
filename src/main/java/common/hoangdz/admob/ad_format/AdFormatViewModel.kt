@@ -2,6 +2,7 @@ package common.hoangdz.admob.ad_format
 
 import android.app.Application
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.nativead.NativeAd
@@ -9,12 +10,14 @@ import common.hoangdz.admob.ad_format.banner.BannerLoader
 import common.hoangdz.admob.ad_format.full_screen_native_ads.loader.FullScreenNativeAdsLoader
 import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdQueue
 import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdsLoader
+import common.hoangdz.admob.ad_format.native_ads.model.NativeAdBinding
 import common.hoangdz.admob.config.shared.AdShared
 import common.hoangdz.lib.jetpack_compose.exts.compareAndSet
 import common.hoangdz.lib.utils.user.PremiumHolder
 import common.hoangdz.lib.viewmodels.AppViewModel
 import common.hoangdz.lib.viewmodels.DataResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
@@ -37,7 +40,7 @@ class AdFormatViewModel @Inject constructor(
 
     private val bannerConfig by lazy { adShared.bannerScreenConfigs }
 
-    private val nativeAdMapper by lazy { hashMapOf<String, MutableStateFlow<DataResult<NativeAd>>>() }
+    private val nativeAdMapper by lazy { hashMapOf<String, NativeAdBinding>() }
     private val fullScreenNativeAdMapper by lazy { hashMapOf<String, MutableStateFlow<DataResult<NativeAd>>>() }
 
     private val _bannerLoaderState by lazy {
@@ -45,6 +48,8 @@ class AdFormatViewModel @Inject constructor(
     }
 
     val bannerLoaderState by lazy { _bannerLoaderState.asStateFlow() }
+
+    private var reloadNativeJob: Job? = null
 
     private val _bannerReloadRequester by lazy { MutableStateFlow(0) }
     val bannerReloadRequester by lazy { _bannerReloadRequester.asStateFlow() }
@@ -69,14 +74,17 @@ class AdFormatViewModel @Inject constructor(
         )
     }
 
-    fun loadNativeAds(requestId: String): MutableStateFlow<DataResult<NativeAd>> {
+
+    fun loadNativeAds(
+        requestId: String, reload: Boolean = false
+    ): NativeAdBinding {
         val nativeLoaderState = synchronized(nativeAdMapper) {
-            val state = nativeAdMapper[requestId] ?: MutableStateFlow(
-                DataResult<NativeAd>(
-                    DataResult.DataState.IDLE
-                )
-            ).also { nativeAdMapper[requestId] = it }
-            nativeAdsLoader.enqueueNativeAds(NativeAdQueue(requestId, state))
+            val state = nativeAdMapper[requestId] ?: NativeAdBinding(
+                context, requestId, viewModelScope
+            ).also {
+                it.startReload()
+                nativeAdMapper[requestId] = it
+            }
             state
         }
         return nativeLoaderState
@@ -99,8 +107,7 @@ class AdFormatViewModel @Inject constructor(
         super.onCleared()
         synchronized(nativeAdMapper) {
             nativeAdMapper.entries.forEach {
-                it.value.value.value?.destroy()
-                nativeAdsLoader.removeQueue(it.key)
+                it.value.destroy()
             }
             nativeAdMapper.clear()
         }
@@ -110,16 +117,6 @@ class AdFormatViewModel @Inject constructor(
                 fullScreenNativeAdsLoader.removeQueue(it.key)
             }
             fullScreenNativeAdMapper.clear()
-        }
-    }
-
-    fun registerReloadNative() {
-        synchronized(nativeAdMapper) {
-            for (entry in nativeAdMapper) {
-                entry.value.value.value?.destroy()
-                entry.value.value = DataResult(DataResult.DataState.IDLE)
-            }
-//            nativeAdMapper.remove(idReload)
         }
     }
 }
