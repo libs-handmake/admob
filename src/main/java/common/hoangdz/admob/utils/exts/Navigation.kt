@@ -3,6 +3,8 @@ package common.hoangdz.admob.utils.exts
 import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import common.hoangdz.admob.di.entry_point.AdmobEntryPoint
+import common.hoangdz.lib.extensions.appInject
 import common.hoangdz.lib.extensions.getActivity
 import common.hoangdz.lib.jetpack_compose.navigation.ScreenConfigs
 import common.hoangdz.lib.utils.ads.GlobalAdState
@@ -47,13 +49,16 @@ fun ScreenConfigs.popNavigationWithAds(
 }
 
 fun ScreenConfigs.popNavigationWithAds(
-    activity: Activity?, navID: String? = null, ignoredAds: Boolean = true
+    activity: Activity?, navID: String? = null, ignoredAds: Boolean? = null
 ) {
+    val ignoredAdsP =
+        ignoredAds ?: (activity?.appInject<AdmobEntryPoint>()?.adsShared()?.useInterOnBack == false)
+
     fun pop() {
         if (navID.isNullOrEmpty()) ScreenConfigs.navController?.popBackStack()
         else ScreenConfigs.navController?.popBackStack(navID, true)
     }
-    if (ignoredAds) {
+    if (ignoredAdsP) {
         pop()
         return
     }
