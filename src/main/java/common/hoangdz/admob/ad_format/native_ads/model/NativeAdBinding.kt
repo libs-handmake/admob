@@ -39,6 +39,8 @@ class NativeAdBinding(
 
     private var paused = false
 
+    private var loading = false
+
     fun attachToLifecycle(owner: LifecycleOwner) {
         currentOwner?.lifecycle?.removeObserver(this)
         owner.lifecycle.addObserver(this)
@@ -49,6 +51,7 @@ class NativeAdBinding(
     init {
         scope.launch {
             nativeAdState.collect {
+                if (it.state.ordinal >= DataResult.DataState.LOADED.ordinal) loading = false
                 if (it.state == DataResult.DataState.LOADED && it.value != null) {
                     timeLoaded = System.currentTimeMillis()
                     if (!paused) startReload()
@@ -59,8 +62,9 @@ class NativeAdBinding(
 
     fun startReload() {
         stopReload()
-        if (nativeAdState.value.state == DataResult.DataState.LOADING) return
+        if (nativeAdState.value.state == DataResult.DataState.LOADING || loading) return
         if (!reloadable && nativeAdState.value.state != DataResult.DataState.IDLE) return
+        loading = true
         val time = adShared.nativeReloadInterval - (System.currentTimeMillis() - timeLoaded)
         timeLoaded = System.currentTimeMillis()
         reloadJob = scope.launch {
