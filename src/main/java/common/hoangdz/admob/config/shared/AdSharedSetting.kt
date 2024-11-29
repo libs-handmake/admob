@@ -23,5 +23,7 @@ object AdSharedSetting {
 
     val USE_INTER_ON_BACK = "use_inter_on_back" to true
 
+    val NATIVE_FULL_SCREEN_AFTER_INTER = "native_fullscreen_afterinter " to true
+
     val BANNER_SCREEN_CONFIG = "banner_screen_config" to "{}"
 }

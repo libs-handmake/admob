@@ -34,4 +34,6 @@ interface AdShared {
     var nativeReloadInterval :Long
 
     var useInterOnBack:Boolean
+
+    var nativeFullScreenAfterInter: Boolean
 }

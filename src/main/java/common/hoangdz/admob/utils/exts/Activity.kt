@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
+import common.hoangdz.admob.ad_format.full_screen_native_ads.view.screen.FullScreenNativeAdRoute
 import common.hoangdz.admob.ad_format.listener.AdLoaderListener
 import common.hoangdz.admob.di.entry_point.AdmobEntryPoint
 import common.hoangdz.lib.extensions.appInject
@@ -16,6 +17,7 @@ import common.hoangdz.lib.extensions.getActivity
 import common.hoangdz.lib.extensions.launchIO
 import common.hoangdz.lib.extensions.launchWhen
 import common.hoangdz.lib.jetpack_compose.navigation.LocalScreenConfigs
+import common.hoangdz.lib.jetpack_compose.navigation.ScreenConfigs
 import common.hoangdz.lib.lifecycle.ActivityLifecycleManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -33,6 +35,13 @@ fun Activity.invokeWithInterstitial(
     if (this is AppCompatActivity) {
         val interLoader = appInject<AdmobEntryPoint>().interstitialLoader()
         interLoader.show(this, object : AdLoaderListener(overrideId) {
+
+//            override fun onAdStartShow() {
+//                if (adsShared.nativeFullScreenAfterInter && FullScreenNativeAdRoute.adContent != null) fullscreenLoader.loadNativeAdIfNeeded(
+//                    false
+//                )
+//            }
+
             override fun onAdClicked() {
                 Firebase.analytics.logEvent("inter_clicked_$screenName", bundleOf())
             }

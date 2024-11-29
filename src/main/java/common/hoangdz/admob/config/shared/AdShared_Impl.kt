@@ -12,6 +12,7 @@ import common.hoangdz.admob.config.shared.AdSharedSetting.MAX_GAP_WATER_FLOOR
 import common.hoangdz.admob.config.shared.AdSharedSetting.MAX_NATIVE_AD_THRESHOLD
 import common.hoangdz.admob.config.shared.AdSharedSetting.MIN_GAP_WATER_FLOOR
 import common.hoangdz.admob.config.shared.AdSharedSetting.NATIVE_AD_CONFIG
+import common.hoangdz.admob.config.shared.AdSharedSetting.NATIVE_FULL_SCREEN_AFTER_INTER
 import common.hoangdz.admob.config.shared.AdSharedSetting.NATIVE_RELOAD_INTERVAL
 import common.hoangdz.admob.config.shared.AdSharedSetting.USE_INTER_ON_BACK
 import common.hoangdz.admob.config.shared.AdSharedSetting.USE_WATER_FLOW
@@ -116,6 +117,14 @@ class AdShared_Impl(context: Context) : PreferenceHelper(context), AdShared {
         get() = pref.getBoolean(USE_INTER_ON_BACK.first, USE_INTER_ON_BACK.second)
         set(value) {
             pref.setBoolean(USE_INTER_ON_BACK.first, value)
+        }
+    override var nativeFullScreenAfterInter: Boolean
+        get() = pref.getBoolean(
+            NATIVE_FULL_SCREEN_AFTER_INTER.first,
+            NATIVE_FULL_SCREEN_AFTER_INTER.second
+        )
+        set(value) {
+            pref.setBoolean(NATIVE_FULL_SCREEN_AFTER_INTER.first, value)
         }
 
 }
