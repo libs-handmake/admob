@@ -12,6 +12,7 @@ import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdQueue
 import common.hoangdz.admob.ad_format.native_ads.loader.NativeAdsLoader
 import common.hoangdz.admob.ad_format.native_ads.model.NativeAdBinding
 import common.hoangdz.admob.config.shared.AdShared
+import common.hoangdz.lib.extensions.logError
 import common.hoangdz.lib.jetpack_compose.exts.compareAndSet
 import common.hoangdz.lib.utils.user.PremiumHolder
 import common.hoangdz.lib.viewmodels.AppViewModel
@@ -104,6 +105,7 @@ class AdFormatViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
+        logError("clear ADViewModel")
         synchronized(nativeAdMapper) {
             nativeAdMapper.entries.forEach {
                 it.value.destroy()
