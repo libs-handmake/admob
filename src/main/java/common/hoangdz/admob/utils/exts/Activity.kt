@@ -7,6 +7,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.NavOptions
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import common.hoangdz.admob.ad_format.full_screen_native_ads.view.screen.FullScreenNativeAdRoute
@@ -16,6 +17,7 @@ import common.hoangdz.lib.extensions.appInject
 import common.hoangdz.lib.extensions.getActivity
 import common.hoangdz.lib.extensions.launchIO
 import common.hoangdz.lib.extensions.launchWhen
+import common.hoangdz.lib.jetpack_compose.exts.noAnimation
 import common.hoangdz.lib.jetpack_compose.navigation.LocalScreenConfigs
 import common.hoangdz.lib.jetpack_compose.navigation.ScreenConfigs
 import common.hoangdz.lib.lifecycle.ActivityLifecycleManager
@@ -33,14 +35,17 @@ fun Activity.invokeWithInterstitial(
     screenName: String, overrideId: String? = null, onInterPassed: (Boolean) -> Unit
 ) {
     if (this is AppCompatActivity) {
-        val interLoader = appInject<AdmobEntryPoint>().interstitialLoader()
+        val entryPoint = appInject<AdmobEntryPoint>()
+        val interLoader = entryPoint.interstitialLoader()
+        val adsShared = entryPoint.adsShared()
+        val fullscreenLoader = entryPoint.fullscreenNativeLoader()
         interLoader.show(this, object : AdLoaderListener(overrideId) {
 
-//            override fun onAdStartShow() {
-//                if (adsShared.nativeFullScreenAfterInter && FullScreenNativeAdRoute.adContent != null) fullscreenLoader.loadNativeAdIfNeeded(
-//                    false
-//                )
-//            }
+            override fun onAdStartShow() {
+                if (adsShared.nativeFullScreenAfterInter && FullScreenNativeAdRoute.adContent != null) fullscreenLoader.loadNativeAdIfNeeded(
+                    false
+                )
+            }
 
             override fun onAdClicked() {
                 Firebase.analytics.logEvent("inter_clicked_$screenName", bundleOf())
@@ -60,7 +65,16 @@ fun Activity.invokeWithInterstitial(
                     owner?.launchWhen(
                         Lifecycle.State.RESUMED
                     ) {
-                        onInterPassed(showed)
+                        if (fullscreenLoader.availableNativeAd > 0 && adsShared.nativeFullScreenAfterInter && FullScreenNativeAdRoute.adContent != null && showed) {
+                            FullScreenNativeAdRoute.onComplete = {
+                                onInterPassed(showed)
+                            }
+                            ScreenConfigs.navController?.navigate(
+                                route = FullScreenNativeAdRoute.navigationInfo(),
+                                navOptions = NavOptions.Builder().noAnimation().build(),
+                                null
+                            )
+                        } else onInterPassed(showed)
                     }
                 }
             }
