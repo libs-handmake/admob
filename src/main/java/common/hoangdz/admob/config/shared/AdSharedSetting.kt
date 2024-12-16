@@ -26,4 +26,7 @@ object AdSharedSetting {
     val NATIVE_FULL_SCREEN_AFTER_INTER = "native_fullscreen_afterinter" to true
 
     val BANNER_SCREEN_CONFIG = "banner_screen_config" to "{}"
+
+    val FULL_SCREEN_NATIVE_CONFIG =
+        "full_screen_native_config" to "{\n" + "  \"enabled\": true,\n" + "  \"duration_in_seconds\": 5\n" + "}"
 }

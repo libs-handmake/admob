@@ -2,10 +2,12 @@ package common.hoangdz.admob.config.shared
 
 import android.content.Context
 import common.hoangdz.admob.ad_format.banner.state_holder.ScreenBannerState
+import common.hoangdz.admob.ad_format.full_screen_native_ads.config.FullscreenNativeConfig
 import common.hoangdz.admob.config.AdState
 import common.hoangdz.admob.config.shared.AdSharedSetting.APP_OPEN_GAP
 import common.hoangdz.admob.config.shared.AdSharedSetting.BANNER_SCREEN_CONFIG
 import common.hoangdz.admob.config.shared.AdSharedSetting.FULL_SCREEN_GAP
+import common.hoangdz.admob.config.shared.AdSharedSetting.FULL_SCREEN_NATIVE_CONFIG
 import common.hoangdz.admob.config.shared.AdSharedSetting.IGNORED_GAP_THRESHOLD
 import common.hoangdz.admob.config.shared.AdSharedSetting.INTER_GAP
 import common.hoangdz.admob.config.shared.AdSharedSetting.MAX_GAP_WATER_FLOOR
@@ -120,11 +122,20 @@ class AdShared_Impl(context: Context) : PreferenceHelper(context), AdShared {
         }
     override var nativeFullScreenAfterInter: Boolean
         get() = pref.getBoolean(
-            NATIVE_FULL_SCREEN_AFTER_INTER.first,
-            NATIVE_FULL_SCREEN_AFTER_INTER.second
+            NATIVE_FULL_SCREEN_AFTER_INTER.first, NATIVE_FULL_SCREEN_AFTER_INTER.second
         )
         set(value) {
             pref.setBoolean(NATIVE_FULL_SCREEN_AFTER_INTER.first, value)
         }
+    override var fullScreenNativeConfigJSON: String
+        get() = pref.getString(FULL_SCREEN_NATIVE_CONFIG.first, FULL_SCREEN_NATIVE_CONFIG.second)
+            ?: FULL_SCREEN_NATIVE_CONFIG.second
+        set(value) {
+            pref.setString(FULL_SCREEN_NATIVE_CONFIG.first, value)
+        }
+
+    override val fullScreenNativeConfig: FullscreenNativeConfig
+        get() = fullScreenNativeConfigJSON.createFromJson<FullscreenNativeConfig>()
+            ?: FullscreenNativeConfig()
 
 }

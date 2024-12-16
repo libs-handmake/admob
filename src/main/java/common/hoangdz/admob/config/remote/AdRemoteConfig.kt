@@ -8,6 +8,7 @@ import common.hoangdz.admob.config.shared.AdShared
 import common.hoangdz.admob.config.shared.AdSharedSetting.APP_OPEN_GAP
 import common.hoangdz.admob.config.shared.AdSharedSetting.BANNER_SCREEN_CONFIG
 import common.hoangdz.admob.config.shared.AdSharedSetting.FULL_SCREEN_GAP
+import common.hoangdz.admob.config.shared.AdSharedSetting.FULL_SCREEN_NATIVE_CONFIG
 import common.hoangdz.admob.config.shared.AdSharedSetting.IGNORED_GAP_THRESHOLD
 import common.hoangdz.admob.config.shared.AdSharedSetting.INTER_GAP
 import common.hoangdz.admob.config.shared.AdSharedSetting.MAX_GAP_WATER_FLOOR
@@ -49,7 +50,8 @@ class AdRemoteConfig @Inject constructor(
                 BANNER_SCREEN_CONFIG.first to adShared.bannerScreenConfigJson,
                 NATIVE_RELOAD_INTERVAL.first to adShared.nativeReloadInterval,
                 USE_INTER_ON_BACK.first to adShared.useInterOnBack,
-                NATIVE_FULL_SCREEN_AFTER_INTER.first to adShared.nativeFullScreenAfterInter
+                NATIVE_FULL_SCREEN_AFTER_INTER.first to adShared.nativeFullScreenAfterInter,
+                FULL_SCREEN_NATIVE_CONFIG.first to adShared.fullScreenNativeConfigJSON
             ).also {
                 it.putAll(remoteConfigDefault)
             }.toMap()
@@ -75,5 +77,6 @@ class AdRemoteConfig @Inject constructor(
         adShared.useInterOnBack = remote.getBoolean(USE_INTER_ON_BACK.first)
         adShared.nativeFullScreenAfterInter =
             remote.getBoolean(NATIVE_FULL_SCREEN_AFTER_INTER.first)
+        adShared.fullScreenNativeConfigJSON = remote.getString(FULL_SCREEN_NATIVE_CONFIG.first)
     }
 }

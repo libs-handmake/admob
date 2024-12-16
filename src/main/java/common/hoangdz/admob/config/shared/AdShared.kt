@@ -1,6 +1,7 @@
 package common.hoangdz.admob.config.shared
 
 import common.hoangdz.admob.ad_format.banner.state_holder.ScreenBannerState
+import common.hoangdz.admob.ad_format.full_screen_native_ads.config.FullscreenNativeConfig
 
 interface AdShared {
     var nativeLoaderThreshold: Int
@@ -31,9 +32,13 @@ interface AdShared {
 
     val nativeAdConfig: Map<String, Boolean>
 
-    var nativeReloadInterval :Long
+    var nativeReloadInterval: Long
 
-    var useInterOnBack:Boolean
+    var useInterOnBack: Boolean
 
     var nativeFullScreenAfterInter: Boolean
+
+    var fullScreenNativeConfigJSON: String
+
+    val fullScreenNativeConfig: FullscreenNativeConfig
 }

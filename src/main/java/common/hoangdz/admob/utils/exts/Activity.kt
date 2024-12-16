@@ -12,6 +12,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import common.hoangdz.admob.ad_format.full_screen_native_ads.view.screen.FullScreenNativeAdRoute
 import common.hoangdz.admob.ad_format.listener.AdLoaderListener
+import common.hoangdz.admob.config.AdState
 import common.hoangdz.admob.di.entry_point.AdmobEntryPoint
 import common.hoangdz.lib.extensions.appInject
 import common.hoangdz.lib.extensions.getActivity
@@ -39,10 +40,11 @@ fun Activity.invokeWithInterstitial(
         val interLoader = entryPoint.interstitialLoader()
         val adsShared = entryPoint.adsShared()
         val fullscreenLoader = entryPoint.fullscreenNativeLoader()
+        val nativeConfig = adsShared.fullScreenNativeConfig
         interLoader.show(this, object : AdLoaderListener(overrideId) {
 
             override fun onAdStartShow() {
-                if (adsShared.nativeFullScreenAfterInter && FullScreenNativeAdRoute.adContent != null) fullscreenLoader.loadNativeAdIfNeeded(
+                if (adsShared.nativeFullScreenAfterInter && FullScreenNativeAdRoute.adContent != null && nativeConfig.enable) fullscreenLoader.loadNativeAdIfNeeded(
                     false
                 )
             }
@@ -67,6 +69,7 @@ fun Activity.invokeWithInterstitial(
                     ) {
                         if (fullscreenLoader.availableNativeAd > 0 && adsShared.nativeFullScreenAfterInter && FullScreenNativeAdRoute.adContent != null && showed) {
                             FullScreenNativeAdRoute.onComplete = {
+                                AdState.lastTimeShowInterAds = System.currentTimeMillis()
                                 onInterPassed(showed)
                             }
                             ScreenConfigs.navController?.navigate(

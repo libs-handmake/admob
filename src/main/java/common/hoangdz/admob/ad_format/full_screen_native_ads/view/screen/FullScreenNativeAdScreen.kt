@@ -17,6 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.navigation.compose.hiltViewModel
 import common.hoangdz.admob.R
 import common.hoangdz.lib.jetpack_compose.exts.SafeModifier
 import common.hoangdz.lib.jetpack_compose.exts.clickableWithDebounce
@@ -33,6 +35,8 @@ import common.hoangdz.lib.jetpack_compose.navigation.ScreenConfigs
 import common.hoangdz.lib.jetpack_compose.navigation.ScreenNavConfig
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 object FullScreenNativeAdRoute : ScreenNavConfig<Nothing>() {
@@ -46,7 +50,7 @@ object FullScreenNativeAdRoute : ScreenNavConfig<Nothing>() {
 
 
     override fun onBackPressed(activity: Activity?, configs: ScreenConfigs): Boolean {
-        return false
+        return true
     }
 
     @Composable
@@ -59,19 +63,26 @@ object FullScreenNativeAdRoute : ScreenNavConfig<Nothing>() {
 
 @Composable
 private fun ScreenContent(
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
+    val viewModel = hiltViewModel<FullScreenNativeAdsViewModel>()
     val config = LocalScreenConfigs.current
     var time by remember {
-        mutableIntStateOf(3)
+        mutableIntStateOf(viewModel.fullscreenNativeConfig.durationInSeconds)
     }
+    val scope = rememberCoroutineScope()
     val timer = remember {
-        object : CountDownTimer(3000, 1000) {
+        object : CountDownTimer(viewModel.fullscreenNativeConfig.durationInSeconds * 1000L, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 time = (millisUntilFinished / 1000).toInt()
             }
 
             override fun onFinish() {
+                scope.launch {
+                    time = -2
+                    delay(2000L)
+                    time = -1
+                }
             }
 
         }
@@ -88,12 +99,12 @@ private fun ScreenContent(
     Scaffold {
         Box(modifier = SafeModifier.padding(it)) {
             content()
-            Box(modifier = SafeModifier
+            if (time > -2) Box(modifier = SafeModifier
                 .align(Alignment.TopEnd)
                 .padding(8.sdp)
                 .clip(CircleShape)
                 .clickableWithDebounce {
-                    if (time == 0) {
+                    if (time < 0) {
                         config.pop()
                         FullScreenNativeAdRoute.onComplete?.invoke()
                         FullScreenNativeAdRoute.onComplete = null
@@ -103,7 +114,7 @@ private fun ScreenContent(
                 .aspectRatio(1f)
                 .background(Color.Black.copy(alpha = .5f))
                 .padding(4.sdp)) {
-                if (time > 0) {
+                if (time > -1) {
                     Text(
                         modifier = SafeModifier.align(Alignment.Center),
                         text = time.toString(),
